@@ -1,0 +1,37 @@
+# OpenSpec Configuration - analitica ETL Project
+schema: spec-driven
+
+context: |
+  Tech stack: Python 3.x, virtual environment, pandas, numpy
+  Architecture: ETL pipeline with SOM (Self-Organizing Maps) algorithm
+  Domain: Data normalization, text-to-number transformation, flexible ETL engine
+  Purpose: University project for analytical data processing
+
+rules:
+  proposal:
+    - Include rollback plan for risky changes
+    - Identify affected modules/packages
+    - Document data flow for each ETL stage
+  specs:
+    - Use Given/When/Then format for scenarios
+    - Use RFC 2119 keywords (MUST, SHALL, SHOULD, MAY)
+    - Include data validation scenarios for transforms
+  design:
+    - Include data flow diagrams for ETL stages
+    - Document architecture decisions with rationale
+    - Specify SOM configuration parameters
+  tasks:
+    - Group tasks by phase (setup, extraction, transformation, loading)
+    - Use hierarchical numbering (1.1, 1.2, etc.)
+    - Keep tasks small enough to complete in one session
+  apply:
+    - Follow PEP 8 style conventions
+    - Load relevant coding skills for Python stack
+    tdd: false
+    test_command: "pytest"
+  verify:
+    test_command: "pytest"
+    build_command: ""
+    coverage_threshold: 0
+  archive:
+    - Warn before merging destructive deltas (large removals)

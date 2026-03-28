@@ -1,0 +1,44 @@
+# Python cache and compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+pip-wheel-metadata/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Test and coverage
+.pytest_cache/
+.coverage
+
+# Editor/IDE
+.vscode/
+.idea/
+*.swp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Mypy
+.mypy_cache/
+
+# Logs, temp
+*.log
+tmp/
+
+# Python egg/build artifacts
+*.egg
+*.egg-info/
+
+# Ignore build artifacts from pip
+pip-wheel-metadata/

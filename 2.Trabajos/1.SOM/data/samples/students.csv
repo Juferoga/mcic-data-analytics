@@ -1,0 +1,11 @@
+student_id,name,age,gpa,major,enrollment_status
+1,Maria Garcia,20,3.85,Computer Science,active
+2,John Smith,22,3.42,Mathematics,active
+3,Emily Johnson,19,3.91,Physics,active
+4,Michael Brown,21,3.15,Chemistry,active
+5,Sarah Davis,23,2.98,Biology,inactive
+6,David Wilson,20,3.78,Computer Science,active
+7,Lisa Martinez,22,3.55,Mathematics,active
+8,James Anderson,19,3.22,Physics,active
+9,Jennifer Taylor,21,3.67,Chemistry,active
+10,Robert Thomas,24,3.10,Biology,inactive

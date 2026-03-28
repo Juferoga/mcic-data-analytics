@@ -1,0 +1,122 @@
+[
+  {
+    "id": 1,
+    "name": "Product 1",
+    "category": "Clothing",
+    "price": 397.44
+  },
+  {
+    "id": 2,
+    "name": "Product 2",
+    "category": "Electronics",
+    "price": 198.52
+  },
+  {
+    "id": 3,
+    "name": "Product 3",
+    "category": "Home",
+    "price": 223.64
+  },
+  {
+    "id": 4,
+    "name": "Product 4",
+    "category": "Clothing",
+    "price": 301.08
+  },
+  {
+    "id": 5,
+    "name": "Product 5",
+    "category": "Electronics",
+    "price": 298.93
+  },
+  {
+    "id": 6,
+    "name": "Product 6",
+    "category": "Food",
+    "price": 43.01
+  },
+  {
+    "id": 7,
+    "name": "Product 7",
+    "category": "Food",
+    "price": 417.45
+  },
+  {
+    "id": 8,
+    "name": "Product 8",
+    "category": "Food",
+    "price": 96.89
+  },
+  {
+    "id": 9,
+    "name": "Product 9",
+    "category": "Electronics",
+    "price": 364.31
+  },
+  {
+    "id": 10,
+    "name": "Product 10",
+    "category": "Home",
+    "price": 388.61
+  },
+  {
+    "id": 11,
+    "name": "Product 11",
+    "category": "Clothing",
+    "price": 360.3
+  },
+  {
+    "id": 12,
+    "name": "Product 12",
+    "category": "Food",
+    "price": 293.7
+  },
+  {
+    "id": 13,
+    "name": "Product 13",
+    "category": "Electronics",
+    "price": 17.16
+  },
+  {
+    "id": 14,
+    "name": "Product 14",
+    "category": "Electronics",
+    "price": 186.58
+  },
+  {
+    "id": 15,
+    "name": "Product 15",
+    "category": "Clothing",
+    "price": 306.37
+  },
+  {
+    "id": 16,
+    "name": "Product 16",
+    "category": "Food",
+    "price": 199.85
+  },
+  {
+    "id": 17,
+    "name": "Product 17",
+    "category": "Electronics",
+    "price": 433.11
+  },
+  {
+    "id": 18,
+    "name": "Product 18",
+    "category": "Clothing",
+    "price": 161.31
+  },
+  {
+    "id": 19,
+    "name": "Product 19",
+    "category": "Home",
+    "price": 153.83
+  },
+  {
+    "id": 20,
+    "name": "Product 20",
+    "category": "Home",
+    "price": 140.34
+  }
+]
