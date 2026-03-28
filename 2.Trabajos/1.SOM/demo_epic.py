@@ -27,6 +27,15 @@ import sys
 import time
 from pathlib import Path
 
+# Rich for improved terminal output
+from rich.console import Console
+from rich.panel import Panel
+from rich.table import Table
+from rich.progress import Progress, SpinnerColumn, BarColumn, TextColumn, TimeElapsedColumn
+
+
+console = Console()
+
 # Banner épico
 BANNER = """
 ╔══════════════════════════════════════════════════════════════════════════════╗
@@ -43,10 +52,8 @@ BANNER = """
 
 
 def print_step(step_num, title, emoji="🚀"):
-    """Imprimir paso con estilo."""
-    print(f"\n{'=' * 70}")
-    print(f"{emoji} PASO {step_num}: {title}")
-    print("=" * 70)
+    """Imprimir paso con estilo usando rich."""
+    console.rule(f"{emoji} PASO {step_num}: {title}", style="bold cyan")
 
 
 def create_demo_data():
@@ -338,7 +345,7 @@ def demo_step5_summary(df_clustered, metrics):
 
 def main():
     """Función principal."""
-    print(BANNER)
+    console.print(Panel(BANNER, title="ETL + SOM ENGINE DEMO", subtitle="demo_epic.py", style="bold green"))
 
     print("""
 ╔══════════════════════════════════════════════════════════════════════════════╗
@@ -354,13 +361,14 @@ def main():
 ╚══════════════════════════════════════════════════════════════════════════════╝
     """)
 
-    print("\n🎬 Iniciando demo automáticamente...")
+    console.print("\n🎬 Iniciando demo automáticamente...", style="bold yellow")
     time.sleep(1)
 
     # Crear datos de demostración
-    print("\n📦 Creando datos de demostración...")
-    customers, transactions, products = create_demo_data()
-    print("   └─ Datos creados: customers.csv, transactions.xlsx, products.json")
+    console.print("\n📦 Creando datos de demostración...", style="bold")
+    with console.status("Generando datasets de ejemplo...", spinner="dots"):
+        customers, transactions, products = create_demo_data()
+    console.log("Datos creados: customers.csv, transactions.xlsx, products.json")
 
     # Pipeline completo
     try:
