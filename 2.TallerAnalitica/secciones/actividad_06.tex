@@ -1,0 +1,31 @@
+\textbf{Uso del Análisis de Grupos en la Detección de Valores Anómalos}
+
+La detección de anomalías (o valores atípicos, \textit{outliers}) se refiere a la identificación de observaciones que se desvían drásticamente de la tendencia general o del comportamiento de la mayoría de los datos. El análisis de grupos (\textit{clustering}) proporciona un enfoque no supervisado altamente eficaz para este propósito, basado en la premisa de que los datos normales se agrupan de forma densa y cohesionada, mientras que los datos anómalos no pertenecen a ningún grupo fuerte, se encuentran aislados o forman agrupaciones sumamente pequeñas.
+
+A continuación, se describen los tres enfoques principales para emplear clustering en la detección de anomalías:
+
+\begin{enumerate}
+    \item \textbf{Detección basada en la distancia al centroide (Ej. usando K-means):}
+    En este enfoque, se aplica un algoritmo de clustering basado en centroides a todo el conjunto de datos. Una vez que se han formado los grupos, se calcula la distancia (generalmente euclidiana) de cada punto de datos al centroide de su grupo asignado.
+    \begin{itemize}
+        \item \textit{Regla de decisión:} Si la distancia de una observación a su centroide supera un umbral predefinido (por ejemplo, más del 95\% del percentil de las distancias, o a más de 3 desviaciones estándar de la distancia promedio intra-clúster), el punto se clasifica como una anomalía. 
+        \item \textit{Interpretación:} El punto es forzado a pertenecer a un grupo debido a la naturaleza del algoritmo (K-means asigna todos los puntos), pero su lejanía indica que no encaja bien en dicho grupo, sugiriendo un comportamiento atípico.
+    \end{itemize}
+
+    \item \textbf{Detección basada en el tamaño del grupo:}
+    Después de ejecutar un algoritmo de agrupamiento, se analiza la cardinalidad (número de elementos) de cada grupo resultante.
+    \begin{itemize}
+        \item \textit{Regla de decisión:} Los grupos que contienen una cantidad insignificante de puntos (por ejemplo, clústeres con 1 o 2 observaciones frente a clústeres de cientos) son tratados enteros como anomalías.
+        \item \textit{Interpretación:} Estos micro-grupos representan eventos raros que son similares entre sí, pero profundamente diferentes del resto del conjunto de datos global (ej. ataques de red coordinados).
+    \end{itemize}
+
+    \item \textbf{Detección automática mediante clustering basado en densidad (DBSCAN):}
+    Los algoritmos basados en densidad, como DBSCAN (\textit{Density-Based Spatial Clustering of Applications with Noise}), son intrínsecamente diseñados para encontrar anomalías como un subproducto natural del proceso de agrupamiento.
+    \begin{itemize}
+        \item \textit{Mecanismo:} DBSCAN requiere definir un radio de vecindad ($\epsilon$) y un número mínimo de puntos (\textit{minPts}). El algoritmo busca regiones de alta densidad para formar grupos. Si un punto no tiene al menos \textit{minPts} vecinos en su radio $\epsilon$, y tampoco es alcanzable desde un núcleo denso, no se le asigna a ningún grupo.
+        \item \textit{Regla de decisión:} Cualquier punto que el algoritmo DBSCAN marque como ``ruido'' (generalmente etiquetado con $-1$) es clasificado inmediatamente como una anomalía. Es el método más robusto porque no fuerza a los atípicos a pertenecer a ningún grupo.
+    \end{itemize}
+\end{enumerate}
+
+\textbf{Ejemplo práctico:}
+En la monitorización de transacciones de tarjetas de crédito, la mayoría de las compras (compras en supermercados, restaurantes locales) formarán clusters grandes y densos en un espacio de variables como ``monto'', ``frecuencia de compra'' y ``ubicación''. Si de repente ocurre una transacción de un monto extremadamente alto en un país extranjero a las 3:00 AM, este punto de datos estará muy alejado de los centroides de los grupos de transacciones normales y, al aplicar DBSCAN, será clasificado como ruido (anomalía), disparando una alerta de posible fraude.

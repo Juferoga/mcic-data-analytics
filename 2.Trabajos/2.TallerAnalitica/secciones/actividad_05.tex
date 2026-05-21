@@ -1,0 +1,87 @@
+% ─────────────────────────────────────────────────────────────
+% ACTIVIDAD 5: Diagrama de dispersión y clustering
+% ─────────────────────────────────────────────────────────────
+
+El análisis de grupos o \emph{clustering} busca descubrir estructuras latentes en los datos sin supervisión previa. El diagrama de dispersión (\emph{scatter plot}) es una herramienta exploratoria esencial porque permite visualizar la distribución espacial de las observaciones y, en muchos casos, identificar visualmente la existencia de conglomerados naturales.
+
+% ─────────────────────────────────────────────────────────────
+\subsection{Principio de funcionamiento}
+% ─────────────────────────────────────────────────────────────
+
+En un espacio de características de baja dimensionalidad (2D o 3D), los puntos que pertenecen al mismo cluster tienden a agruparse en regiones densas del espacio. El diagrama de dispersión revela:
+
+\begin{itemize}[leftmargin=2em]
+    \item \textbf{Número tentativo de clusters:} regiones densas y separadas sugieren $k$ grupos.
+    \item \textbf{Forma de los clusters:} esféricos, elongados, cóncavos o con ruido de fondo.
+    \item \textbf{Valores atípicos:} puntos aislados lejos de cualquier conglomerado.
+    \item \textbf{Sobrelapamiento:} clusters que comparten fronteras difusas, lo que indica que algoritmos rígidos como $k$-means pueden fallar.
+\end{itemize}
+
+% ─────────────────────────────────────────────────────────────
+\subsection{Ejemplo ilustrativo}
+% ─────────────────────────────────────────────────────────────
+
+Considere un conjunto de datos bidimensional que representa las compras semanales de clientes en un supermercado: eje $X =$ \emph{frecuencia de visitas} y eje $Y =$ \emph{gasto promedio por visita}. La figura~\ref{fig:scatter-clustering} muestra tres patrones diferenciados.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[scale=1.1]
+        % Cluster A: compradores frecuentes, gasto moderado
+        \foreach \i in {1,...,25} {
+            \pgfmathsetmacro{\x}{1.5+rand*1.2}
+            \pgfmathsetmacro{\y}{3.0+rand*0.8}
+            \fill[blue!70] (\x,\y) circle (2pt);
+        }
+        \node[blue!80!black, font=\small\bfseries] at (1.5,4.2) {A};
+
+        % Cluster B: compradores ocasionales, gasto alto
+        \foreach \i in {1,...,20} {
+            \pgfmathsetmacro{\x}{5.0+rand*1.0}
+            \pgfmathsetmacro{\y}{6.0+rand*1.0}
+            \fill[red!70] (\x,\y) circle (2pt);
+        }
+        \node[red!80!black, font=\small\bfseries] at (5.0,7.3) {B};
+
+        % Cluster C: compradores frecuentes, gasto bajo
+        \foreach \i in {1,...,30} {
+            \pgfmathsetmacro{\x}{6.5+rand*1.0}
+            \pgfmathsetmacro{\y}{1.5+rand*0.9}
+            \fill[green!60!black] (\x,\y) circle (2pt);
+        }
+        \node[green!50!black, font=\small\bfseries] at (6.5,2.7) {C};
+
+        % Outlier
+        \fill[orange!90!black] (3.5,6.5) circle (3pt);
+        \node[orange!90!black, font=\small] at (3.8,6.7) {Outlier};
+
+        % Axes
+        \draw[->, thick] (0,0) -- (8.5,0) node[right] {Frecuencia de visitas};
+        \draw[->, thick] (0,0) -- (0,8.0) node[above] {Gasto promedio};
+        \draw[dashed, gray] (0,0) rectangle (8,7.5);
+    \end{tikzpicture}
+    \caption{Diagrama de dispersión de clientes según frecuencia de visita y gasto promedio. Se aprecian tres grupos bien diferenciados y un valor atípico (outlier).}
+    \label{fig:scatter-clustering}
+\end{figure}
+
+% ─────────────────────────────────────────────────────────────
+\subsection{Uso del diagrama para seleccionar algoritmos}
+% ─────────────────────────────────────────────────────────────
+
+\begin{table}[H]
+    \centering
+    \small
+    \begin{tabular}{@{}p{3.5cm}p{3.8cm}p{5.8cm}@{}}
+        \toprule
+        \textbf{Patrón visual} & \textbf{Algoritmo recomendado} & \textbf{Justificación} \\
+        \midrule
+        Esféricos, bien separados & $k$-means & Minimiza varianza intra-cluster \\
+        Formas arbitrarias, densidad & DBSCAN & No asume geometría global \\
+        Jerarquía anidada & Clustering jerárquico & Dendrograma muestra niveles \\
+        Clusters de densidad variable & HDBSCAN & Robustez a densidades mixtas \\
+        \bottomrule
+    \end{tabular}
+    \caption{Correspondencia entre patrones visuales en el diagrama de dispersión y algoritmos de clustering.}
+    \label{tab:scatter-algorithms}
+\end{table}
+
+La tabla~\ref{tab:scatter-algorithms} resume cómo la morfología observada en el diagrama de dispersión orienta la selección del método de agrupación. En el ejemplo de la figura~\ref{fig:scatter-clustering}, los tres grupos son aproximadamente esféricos y separados; por tanto, $k$-means con $k=3$ sería una elección apropiada.

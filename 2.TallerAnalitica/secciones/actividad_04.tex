@@ -1,0 +1,30 @@
+\textbf{Heurísticas para la Tasa de Aprendizaje ($\eta$)}
+
+La tasa de aprendizaje, comúnmente denotada como $\eta$ o \textit{learning rate}, es un hiperparámetro crítico en el entrenamiento de redes neuronales artificiales mediante el algoritmo de retropropagación (\textit{backpropagation}). Un $\eta$ muy alto puede causar que el modelo no converja y oscile alrededor del mínimo global de la función de pérdida, mientras que un $\eta$ muy bajo provocará que el proceso de entrenamiento sea excesivamente lento o se estanque en mínimos locales. 
+
+A continuación, se describen tres heurísticas o enfoques ampliamente utilizados para ajustar y optimizar la tasa de aprendizaje durante el entrenamiento:
+
+\begin{enumerate}
+    \item \textbf{Decaimiento programado (Learning Rate Decay / Annealing):}
+    En lugar de usar una tasa de aprendizaje constante durante todo el entrenamiento, esta heurística propone reducir el valor de $\eta$ a medida que avanzan las épocas o iteraciones. La lógica detrás de esto es dar pasos grandes al principio para acercarse rápidamente al mínimo, y pasos más finos hacia el final para asegurar la convergencia sin oscilar.
+    Existen varias formas de decaimiento:
+    \begin{itemize}
+        \item \textit{Decaimiento basado en el tiempo:} $\eta_t = \frac{\eta_0}{1 + k \cdot t}$, donde $\eta_0$ es la tasa inicial, $k$ es una constante de decaimiento y $t$ es la época actual.
+        \item \textit{Decaimiento por pasos (Step decay):} Reducir la tasa en un factor constante (ej. a la mitad) cada cierto número fijo de épocas.
+    \end{itemize}
+
+    \item \textbf{Heurística de Bold Driver (Conductor Audaz):}
+    Esta es una estrategia dinámica que ajusta la tasa de aprendizaje en función del cambio en la función de error $E$ después de una actualización de pesos.
+    \begin{itemize}
+        \item Si la actualización de los pesos produce una \textbf{disminución} en el error ($E_t < E_{t-1}$), significa que la dirección es buena. Por lo tanto, se \textbf{aumenta} la tasa de aprendizaje ligeramente (por ejemplo, multiplicándola por 1.05) para acelerar la convergencia.
+        \item Si la actualización produce un \textbf{aumento} en el error ($E_t > E_{t-1}$), significa que el paso fue demasiado grande. Se descarta la actualización de los pesos y se \textbf{reduce} la tasa de aprendizaje drásticamente (por ejemplo, dividiéndola por 2).
+    \end{itemize}
+
+    \item \textbf{Tasas de aprendizaje adaptativas por parámetro (ej. RMSProp, Adam):}
+    Mientras que las heurísticas anteriores ajustan una tasa global para toda la red, los métodos modernos adaptativos ajustan el $\eta$ \textbf{individualmente para cada peso} de la red.
+    En backpropagation, los pesos asociados a características infrecuentes tienden a recibir gradientes muy pequeños. Usar un $\eta$ global puede hacer que estos pesos aprendan demasiado lento. Métodos como Adam (\textit{Adaptive Moment Estimation}) mantienen un registro del promedio móvil exponencial de los gradientes pasados (primer momento) y de los gradientes al cuadrado (segundo momento).
+    \begin{equation}
+        \eta_{ij}^{(t)} = \frac{\eta_0}{\sqrt{v_{ij}^{(t)}} + \epsilon}
+    \end{equation}
+    Donde $v_{ij}^{(t)}$ es un promedio de los gradientes cuadrados recientes para el peso $w_{ij}$. Esto asegura pasos más grandes para parámetros con gradientes pequeños e infrecuentes, y pasos más pequeños para parámetros con gradientes grandes, estabilizando el entrenamiento.
+\end{enumerate}

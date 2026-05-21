@@ -1,0 +1,263 @@
+% ============================================================
+%  Analítica de datos 
+%  Universidad Distrital Francisco José de Caldas — 2026-1
+% ============================================================
+\documentclass[12pt,a4paper]{article}
+
+% ── Codificación y lenguaje ──────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,shorthands=off]{babel}
+\addto\captionsspanish{\renewcommand{\tablename}{Tabla}}
+
+% ── Matemáticas ──────────────────────────────────────────────
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+
+% ── Geometría y tipografía ───────────────────────────────────
+\usepackage{geometry}
+\geometry{top=2.5cm, bottom=2.5cm, left=3cm, right=2.5cm, headheight=14pt}
+\usepackage[protrusion=true,expansion=false]{microtype}
+\usepackage{setspace}
+\onehalfspacing
+
+% ── Gráficos y flotantes ─────────────────────────────────────
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+
+\usepackage{booktabs}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{parskip}
+
+% ── TikZ ─────────────────────────────────────────────────────
+\usepackage{tikz}
+\usetikzlibrary{
+    automata,
+    positioning,
+    arrows.meta,
+    calc,
+    shapes.geometric,
+    shapes.misc,
+    shadows.blur,
+    backgrounds,
+    decorations.pathreplacing
+}
+\usepackage{pgfplots}
+\usepgfplotslibrary{groupplots,statistics}
+\pgfplotsset{compat=1.18}
+
+% ── Tablas ───────────────────────────────────────────────────
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{multirow}
+
+% ── Hipervínculos ────────────────────────────────────────────
+\usepackage[hidelinks]{hyperref}
+
+% ── Entornos teóricos ────────────────────────────────────────
+\theoremstyle{definition}
+\newtheorem{definition}{Definición}[section]
+\theoremstyle{plain}
+\newtheorem{theorem}{Teorema}[section]
+\newtheorem{proposition}{Proposición}[section]
+\theoremstyle{remark}
+\newtheorem{remark}{Observación}[section]
+
+% ── Cabecera y pie ───────────────────────────────────────────
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\small TALLER 2}
+\lhead{\small ANALITICA DE DATOS 2026-1}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ── Caja de pendiente (TODO) ─────────────────────────────────
+\usepackage{tcolorbox}
+\tcbuselibrary{skins}
+\newtcolorbox{pendiente}[1][]{
+    enhanced,
+    colback=orange!8,
+    colframe=orange!60!black,
+    fonttitle=\bfseries\small,
+    title={Pendiente de completar},
+    #1
+}
+
+% ── Portada ──────────────────────────────────────────────────
+\usepackage{titling}
+\pretitle{%
+    \begin{center}
+    \includegraphics[width=0.40\textwidth]{assets/logo_circular_negro.pdf}\par\vspace{1em}
+    \LARGE\bfseries
+}
+\posttitle{\par\end{center}\vspace{0.8em}}
+
+% ============================================================
+%  METADATOS
+% ============================================================
+\title{%
+    \textbf{Taller grupal}\\[4pt]
+    \large analítica de datos
+    \vspace{2em}
+}
+\author{%
+    \textit{Juan Felipe Rodríguez G.} \quad 20261595004 \\
+    \textit{Carlos Stiven Mora Hoyos} \quad 20261595003 \\
+    \vspace{3em}
+    \textit{Sergio Santiago Duarte Rojas} \quad 20261595002 \\[6pt]
+    \vspace{1em}
+    Curso: Analítica de datos\\
+    \vspace{1em}
+    Universidad Distrital Francisco José de Caldas
+    \vspace{1em}
+}
+\date{Bogotá, Colombia \\ \today}
+
+% ============================================================
+\begin{document}
+\maketitle
+\thispagestyle{fancy}
+
+\clearpage
+\tableofcontents
+\clearpage
+
+% TALLER
+% 1. Reescriba el algoritmo backpropagation (retropropagation) utilizando una función de transferencia tipo tangente hiperbólica.  
+% 2. Describa las diferencias entre la red naïve bayes y la red TAN (naïve bayes aumentado), plantee un ejemplo para cada red.
+% 3. ¿Porqué se afirma que las redes neuronales artificiales son altamente tolerantes al ruido?. Explique mediante un ejemplo.
+% 4. Consulte o proponga tres heurísticas para la tasa de aprendizaje de una red neuronal artificial, particularmente aquellas que usan el algoritmo de retropropagación (backpropagation).
+% 5. De que forma un diagrama de dispersión puede ayudar en el análisis de grupos (clustering). Explique mediante un ejemplo.
+% 6. ¿Cómo se puede emplear el análisis de grupos en la detección de valores anómalos?.
+% 7. Plantee un ejemplo con el fin de describir los métodos jerárquicos empleados en el análisis de grupos.
+% 8. ¿Qué diferencias hay entre las redes neuronales artificiales mapas auto-oganizativos de Kohonen (SOM) y la red ART2?.
+% 9. Consulte y plantee un ejemplo sobre agrupación incremental.
+% 10. Describa cada una de las siguientes distancias de similitud ¿Cómo usarlas para agrupación?: Distancia euclidiana canónica, Distancia de Manhattan, Distancia del supremo, Distancia de Canberra, Distancia Binaria, Distancia de Mahalanobis, y Distancia de Hamming. Plantee el modelo matemático y un ejemplo para cada distancia. 
+
+% ============================================================
+\section{Actividad 1: Backpropagation con función tangente hiperbólica}
+% ============================================================
+\input{secciones/actividad_01.tex}
+\begin{pendiente}
+Reescriba el algoritmo backpropagation (retropropagación) utilizando una función de transferencia tipo tangente hiperbólica.
+\end{pendiente}
+
+% ============================================================
+\section{Actividad 2: Diferencias entre Naïve Bayes y red TAN}
+% ============================================================
+\input{secciones/actividad_02.tex}
+\begin{pendiente}
+Describa las diferencias entre la red naïve bayes y la red TAN (naïve bayes aumentado). Plantee un ejemplo para cada red.
+\end{pendiente}
+
+% ============================================================
+\section{Actividad 3: Tolerancia al ruido en redes neuronales}
+% ============================================================
+\input{secciones/actividad_03.tex}
+\begin{pendiente}
+¿Por qué se afirma que las redes neuronales artificiales son altamente tolerantes al ruido? Explique mediante un ejemplo.
+\end{pendiente}
+
+% ============================================================
+\section{Actividad 4: Heurísticas para la tasa de aprendizaje}
+% ============================================================
+\input{secciones/actividad_04.tex}
+
+% ============================================================
+\section{Actividad 5: Diagrama de dispersión y clustering}
+% ============================================================
+\input{secciones/actividad_05.tex}
+
+% ============================================================
+\section{Actividad 6: Clustering para detección de anomalías}
+% ============================================================
+\input{secciones/actividad_06.tex}
+
+% ============================================================
+\section{Actividad 7: Métodos jerárquicos en análisis de grupos}
+% ============================================================
+\input{secciones/actividad_07.tex}
+\begin{pendiente}
+Plantee un ejemplo para describir los métodos jerárquicos empleados en el análisis de grupos.
+\end{pendiente}
+% ============================================================
+\section{Actividad 8: SOM (Kohonen) vs ART2}
+% ============================================================
+\input{secciones/actividad_08.tex}
+\begin{pendiente}
+¿Qué diferencias hay entre los mapas auto-organizativos de Kohonen (SOM) y la red ART2? Explique con ejemplos.
+\end{pendiente}
+
+% ============================================================
+\section{Actividad 9: Agrupación incremental}
+% ============================================================
+\input{secciones/actividad_09.tex}
+\begin{pendiente}
+Consulte y plantee un ejemplo sobre agrupación incremental.
+\end{pendiente}
+
+% ============================================================
+\section{Actividad 10: Distancias de similitud para agrupación}
+% ============================================================
+\input{secciones/actividad_10.tex}
+\begin{pendiente}
+Describa las distancias: euclidiana, Manhattan, supremo, Canberra, binaria, Mahalanobis y Hamming; proponga el modelo matemático y un ejemplo para cada una.
+\end{pendiente}
+
+% ============================================================
+\clearpage
+\section*{Bibliografía}
+\addcontentsline{toc}{section}{Bibliografía}
+% ============================================================
+
+\begin{thebibliography}{99}
+
+\bibitem{smith2017cyclical}
+Smith, L.~N. (2017).
+Cyclical learning rates for training neural networks.
+\emph{2017 IEEE Winter Conference on Applications of Computer Vision (WACV)}, 464--472.
+\url{https://doi.org/10.1109/WACV.2017.58}
+
+\bibitem{chandola2009anomaly}
+Chandola, V., Banerjee, A., \& Kumar, V. (2009).
+Anomaly detection: A survey.
+\emph{ACM Computing Surveys}, 41(3), 1--58.
+\url{https://doi.org/10.1145/1541880.1541882}
+
+\bibitem{chalapathy2019deep}
+Chalapathy, R., \& Chawla, S. (2019).
+Deep learning for anomaly detection: A survey.
+\emph{arXiv preprint arXiv:1901.03407}.
+\url{https://arxiv.org/abs/1901.03407}
+
+\bibitem{ester1996dbscan}
+Ester, M., Kriegel, H.-P., Sander, J., \& Xu, X. (1996).
+A density-based algorithm for discovering clusters in large spatial databases with noise.
+\emph{Proceedings of the 2nd International Conference on Knowledge Discovery and Data Mining (KDD'96)}, 226--231.
+
+\bibitem{macqueen1967kmeans}
+MacQueen, J. (1967).
+Some methods for classification and analysis of multivariate observations.
+\emph{Proceedings of the Fifth Berkeley Symposium on Mathematical Statistics and Probability}, 1, 281--297.
+
+\bibitem{rumelhart1986learning}
+Rumelhart, D.~E., Hinton, G.~E., \& Williams, R.~J. (1986).
+Learning representations by back-propagating errors.
+\emph{Nature}, 323(6088), 533--536.
+\url{https://doi.org/10.1038/323533a0}
+
+\bibitem{xu2015comprehensive}
+Xu, R., \& Wunsch, D. (2005).
+Survey of clustering algorithms.
+\emph{IEEE Transactions on Neural Networks}, 16(3), 645--678.
+\url{https://doi.org/10.1109/TNN.2005.845141}
+
+\end{thebibliography}
+
+\end{document}
