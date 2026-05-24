@@ -1,0 +1,64 @@
+Los mapas auto-organizativos de Kohonen (SOM) y la red ART2 (\textit{Adaptive Resonance Theory~2}) son redes neuronales no supervisadas para datos continuos, pero responden a objetivos y supuestos fundamentalmente distintos~\cite{jain1999clustering}.
+
+\subsection*{SOM: preservación topológica sobre rejilla fija}
+
+Un SOM consta de una capa de entrada de dimensión $n$ y una capa de salida organizada en una rejilla de dimensión fija (habitualmente 2D)~\cite{kohonen1990som}. Cada neurona $j$ posee un vector de pesos $\mathbf{w}_j \in \mathbb{R}^n$. Ante un patrón $\mathbf{x}$, se identifica la \emph{neurona ganadora} (BMU, \textit{Best Matching Unit}):
+\[
+j^* = \arg\min_{j} \|\mathbf{x} - \mathbf{w}_j\|,
+\]
+y se actualizan los pesos de $j^*$ y sus vecinas según:
+\[
+\mathbf{w}_j(t+1) = \mathbf{w}_j(t) + \eta(t)\,h_{j,j^*}(t)\,\bigl[\mathbf{x}(t) - \mathbf{w}_j(t)\bigr],
+\]
+donde $\eta(t)$ es la tasa de aprendizaje y $h_{j,j^*}(t) = \exp\!\bigl(-\|r_j - r_{j^*}\|^2 / 2\sigma^2(t)\bigr)$ es la función de vecindad gaussiana~\cite{kohonen1990som}. El resultado es un mapa que preserva la topología del espacio de entrada: patrones similares activan neuronas adyacentes en la rejilla.
+
+\subsection*{ART2: plasticidad-estabilidad con vigilancia adaptativa}
+
+ART2 aborda explícitamente el \emph{dilema plasticidad-estabilidad}: la red debe incorporar categorías nuevas sin degradar las ya aprendidas~\cite{grossberg1987competitive}. Su mecanismo central es un parámetro de vigilancia $\rho \in (0,1)$ que controla la granularidad de las categorías~\cite{carpenter1987art2}. Cuando llega un patrón $\mathbf{x}$, se selecciona la categoría candidata $j^*$ por mayor activación; si la similitud normalizada no supera el umbral:
+\[
+\frac{\|\mathbf{x} \wedge \mathbf{w}_{j^*}\|}{\|\mathbf{x}\|} < \rho,
+\]
+la categoría es rechazada y se activa la siguiente candidata~\cite{carpenter1987art2}. Si ninguna supera el umbral, se crea automáticamente una categoría nueva, dejando las existentes intactas, lo que garantiza la estabilidad del conocimiento previo~\cite{grossberg1987competitive}.
+
+\subsection*{Comparación}
+
+\begin{table}[H]
+\centering
+\caption{Diferencias fundamentales entre SOM~\cite{kohonen1990som} y ART2~\cite{carpenter1987art2}.}
+\label{tab:som_art}
+\begin{tabular}{p{3.4cm} p{4.9cm} p{4.9cm}}
+\toprule
+\textbf{Criterio} & \textbf{SOM} & \textbf{ART2} \\
+\midrule
+Número de neuronas
+  & Fijo, definido antes del entrenamiento
+  & Dinámico; crece conforme llegan nuevos patrones \\[4pt]
+Preservación topológica
+  & Sí; la proximidad en la rejilla refleja similitud en el espacio de entrada
+  & No \\[4pt]
+Dilema plasticidad-estabilidad
+  & No abordado; el reentrenamiento puede borrar representaciones previas
+  & Resuelto explícitamente mediante $\rho$ \\[4pt]
+Parámetro clave
+  & Radio de vecindad $\sigma(t)$ y tasa $\eta(t)$
+  & Parámetro de vigilancia $\rho$ \\[4pt]
+Tipo de aprendizaje
+  & Competitivo cooperativo; actualiza neurona ganadora y vecinas
+  & Competitivo puro; solo se actualiza la categoría seleccionada \\[4pt]
+Aprendizaje online
+  & Posible, pero con degradación si la distribución cambia
+  & Estable frente a nuevos conceptos; no requiere reentrenamiento global \\[4pt]
+Aplicación típica
+  & Visualización, reducción de dimensionalidad, análisis exploratorio
+  & Clasificación en tiempo real, detección de conceptos emergentes \\[4pt]
+Sensibilidad al orden de presentación
+  & Baja; el mapa converge hacia una representación estable con entrenamiento suficiente, independientemente del orden
+  & Alta; el orden en que llegan los patrones determina qué categorías se crean primero y puede producir arquitecturas distintas ante los mismos datos reordenados \\[4pt]
+Maldición de la dimensionalidad
+  & Pronunciada; la rejilla fija de neuronas no escala con espacios de alta dimensión, y la distancia euclidiana pierde discriminación~\cite{aggarwal2001surprising}
+  & Moderada; el parámetro $\rho$ opera sobre normas normalizadas, aunque $\|\mathbf{x}\|$ también se degrada en dimensiones elevadas \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+En síntesis, SOM es preferible cuando se busca una representación visual compacta de la estructura de los datos~\cite{kohonen1990som}, mientras que ART2 resulta más adecuado en escenarios donde el número de categorías es desconocido y el sistema debe reconocer patrones nuevos sin comprometer el conocimiento previo~\cite{carpenter1987art2,grossberg1987competitive}.

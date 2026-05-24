@@ -15,7 +15,13 @@
 \contentsline {subsection}{\numberline {6.2}Enfoque práctico: Clustering + umbral de distancia}{8}{subsection.6.2}%
 \contentsline {subsection}{\numberline {6.3}Ventajas y limitaciones}{8}{subsection.6.3}%
 \contentsline {section}{\numberline {7}Actividad 7: Métodos jerárquicos en análisis de grupos}{9}{section.7}%
-\contentsline {section}{\numberline {8}Actividad 8: SOM (Kohonen) vs ART2}{9}{section.8}%
-\contentsline {section}{\numberline {9}Actividad 9: Agrupación incremental}{9}{section.9}%
-\contentsline {section}{\numberline {10}Actividad 10: Distancias de similitud para agrupación}{10}{section.10}%
-\contentsline {section}{Bibliografía}{11}{section*.6}%
+\contentsline {section}{\numberline {8}Actividad 8: SOM (Kohonen) vs ART2}{11}{section.8}%
+\contentsline {section}{\numberline {9}Actividad 9: Agrupación incremental}{14}{section.9}%
+\contentsline {section}{\numberline {10}Actividad 10: Distancias de similitud para agrupación}{15}{section.10}%
+\contentsline {subsection}{\numberline {10.1}Distancia euclidiana canónica}{16}{subsection.10.1}%
+\contentsline {subsection}{\numberline {10.2}Distancia de Manhattan}{16}{subsection.10.2}%
+\contentsline {subsection}{\numberline {10.3}Distancia del supremo}{16}{subsection.10.3}%
+\contentsline {subsection}{\numberline {10.4}Distancia de Canberra}{17}{subsection.10.4}%
+\contentsline {subsection}{\numberline {10.5}Distancia binaria}{17}{subsection.10.5}%
+\contentsline {subsection}{\numberline {10.6}Distancia de Mahalanobis}{18}{subsection.10.6}%
+\contentsline {subsection}{\numberline {10.7}Distancia de Hamming}{18}{subsection.10.7}%

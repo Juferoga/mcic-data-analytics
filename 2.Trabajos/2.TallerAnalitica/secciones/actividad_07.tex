@@ -1,0 +1,101 @@
+Los métodos jerárquicos construyen una secuencia anidada de particiones representable mediante un \emph{dendrograma}~\cite{jain1999clustering}. A diferencia de k-means, no requieren fijar \textit{a priori} el número de grupos; el analista determina la partición óptima cortando el árbol a la altura que corresponda al salto de distancia más pronunciado.
+
+\subsection*{Variantes y criterios de enlace}
+
+La estrategia \textbf{aglomerativa} (\textit{bottom-up}) parte de $n$ grupos singleton y fusiona en cada iteración los dos clusters más próximos hasta que el conjunto queda reducido a uno solo~\cite{murtagh2012hierarchical}. Su costo es $O(n^2 \log n)$ con estructuras de datos eficientes. La estrategia \textbf{divisiva} (\textit{top-down}) subdivide recursivamente el grupo completo; su complejidad $O(2^n)$ la hace impráctica para conjuntos grandes~\cite{jain1999clustering}.
+
+El criterio de enlace determina la distancia entre clusters y, con ello, el orden de las fusiones:
+\begin{align}
+d_{\mathrm{simple}}(C_i, C_j) &= \min_{\mathbf{x}\in C_i,\;\mathbf{y}\in C_j} d(\mathbf{x},\mathbf{y}), \label{eq:single_link}\\
+d_{\mathrm{completo}}(C_i, C_j) &= \max_{\mathbf{x}\in C_i,\;\mathbf{y}\in C_j} d(\mathbf{x},\mathbf{y}), \label{eq:complete_link}\\
+d_{\mathrm{Ward}}(C_i, C_j) &= \sqrt{\frac{2\,|C_i|\,|C_j|}{|C_i|+|C_j|}}\,\left\|\bar{\mathbf{x}}_i - \bar{\mathbf{x}}_j\right\|_2, \label{eq:ward_link}
+\end{align}
+donde $\bar{\mathbf{x}}_i = \frac{1}{|C_i|}\sum_{\mathbf{p}\in C_i}\mathbf{p}$ es el centroide del cluster $C_i$. El criterio de Ward~\cite{ward1963hierarchical} minimiza el incremento de varianza intra-cluster en cada fusión y suele producir grupos más compactos y equilibrados que los criterios de enlace simple y completo~\cite{murtagh2012hierarchical}.
+
+\subsection*{Ejemplo: cinco puntos en $\mathbb{R}^2$}
+
+Considérense los puntos $p_1=(1,1)$, $p_2=(2,1)$, $p_3=(1.5,2)$, $p_4=(8,8)$ y $p_5=(9,7)$. La Tabla~\ref{tab:dist_jer} muestra la matriz de distancias euclidianas.
+
+\begin{table}[H]
+\centering
+\caption{Matriz de distancias euclidianas entre los cinco puntos.}
+\label{tab:dist_jer}
+\begin{tabular}{lccccc}
+\toprule
+ & $p_1$ & $p_2$ & $p_3$ & $p_4$ & $p_5$ \\
+\midrule
+$p_1$ & $0$ & $1{,}00$ & $1{,}12$ & $9{,}90$ & $10{,}00$ \\
+$p_2$ &     & $0$      & $1{,}12$ & $9{,}22$ & $9{,}22$  \\
+$p_3$ &     &          & $0$      & $8{,}60$ & $9{,}01$  \\
+$p_4$ &     &          &          & $0$      & $1{,}41$  \\
+$p_5$ &     &          &          &          & $0$       \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Bajo enlace simple~\eqref{eq:single_link}, el algoritmo aglomerativo produce cuatro fusiones en el siguiente orden:
+
+\begin{enumerate}
+\item $\{p_1\} \cup \{p_2\} \to C_{12}$, distancia mínima $d = 1{,}00$.
+\item $C_{12} \cup \{p_3\} \to C_{123}$, distancia $d = 1{,}12$ (por enlace simple, distancia de $p_3$ al más cercano de $C_{12}$).
+\item $\{p_4\} \cup \{p_5\} \to C_{45}$, distancia $d = 1{,}41$.
+\item $C_{123} \cup C_{45}$, distancia $d = 8{,}60$.
+\end{enumerate}
+
+El salto entre $d = 1{,}41$ y $d = 8{,}60$ indica la existencia de dos macro-grupos naturales; cualquier corte en el intervalo $(1{,}41,\; 8{,}60)$ recupera exactamente la bipartición $\{p_1,p_2,p_3\}$ y $\{p_4,p_5\}$~\cite{jain1999clustering}. La Figura~\ref{fig:dendrograma} muestra el dendrograma resultante.
+
+\begin{figure}[H]
+\centering
+% Escala vertical uniforme por nivel de fusion (no proporcional a d).
+% Los valores reales de distancia se anotan en el eje Y.
+% Niveles: L1(d=1,00)->y=1.0, L2(d=1,12)->y=2.0, L3(d=1,41)->y=3.0, L4(d=8,60)->y=5.2
+% Hojas: p1=0, p2=1.5, p3=3  |  p4=6, p5=7.5  (separacion visual entre grupos)
+\begin{tikzpicture}[x=1.1cm, y=1.0cm]
+  % --- Eje Y ---
+  \draw[->] (-1.35,0) -- (-1.35,6.0) node[above,font=\small]{$d$};
+
+  % --- Marcas y guias horizontales (distancias reales) ---
+  \foreach \y/\lab in {1.0/1{,}00, 2.0/1{,}12, 3.0/1{,}41, 5.2/8{,}60}{
+    \draw[gray!30, densely dashed, thin] (-1.35,\y) -- (8.4,\y);
+    \draw (-1.44,\y) -- (-1.26,\y);
+    \node[left, font=\scriptsize, anchor=east] at (-1.48,\y) {$\lab$};
+  }
+
+  % --- Etiquetas de hojas ---
+  \foreach \x/\lbl in {0/$p_1$, 1.5/$p_2$, 3/$p_3$, 6/$p_4$, 7.5/$p_5$}
+    \node[below, font=\small] at (\x,0) {\lbl};
+
+  % --- Tallos desde hojas al primer nivel de fusion ---
+  \draw (0,   0.12) -- (0,   1.0);  % p1 -> L1
+  \draw (1.5, 0.12) -- (1.5, 1.0);  % p2 -> L1
+  \draw (3,   0.12) -- (3,   2.0);  % p3 -> L2
+  \draw (6,   0.12) -- (6,   3.0);  % p4 -> L3
+  \draw (7.5, 0.12) -- (7.5, 3.0);  % p5 -> L3
+
+  % --- Fusion 1: {p1}+{p2} a d=1,00 (y=1.0) ---
+  % Barra horizontal de x=0 a x=1.5; centro en x=0.75
+  \draw (0, 1.0) -- (1.5, 1.0);
+
+  % --- Fusion 2: {p1,p2}+{p3} a d=1,12 (y=2.0) ---
+  % Sube del centro de L1 (x=0.75) al nivel L2 y conecta con p3
+  \draw (0.75, 1.0) -- (0.75, 2.0) -- (3, 2.0);
+  % Centro de la barra de L2: x=(0.75+3)/2=1.875
+
+  % --- Fusion 3: {p4}+{p5} a d=1,41 (y=3.0) ---
+  % Barra horizontal de x=6 a x=7.5; centro en x=6.75
+  \draw (6, 3.0) -- (7.5, 3.0);
+
+  % --- Fusion 4: {p1,p2,p3}+{p4,p5} a d=8,60 (y=5.2) ---
+  % Sube del centro de L2 (x=1.875) y del centro de L3 (x=6.75) al nivel L4
+  \draw (1.875, 2.0) -- (1.875, 5.2) -- (6.75, 5.2) -- (6.75, 3.0);
+
+  % --- Linea de corte (entre L3 y L4) ---
+  \draw[dashed, red!65!black, semithick]
+        (-1.2, 4.1) -- (8.4, 4.1)
+        node[right, font=\scriptsize, red!65!black]{corte $k=2$};
+\end{tikzpicture}
+\caption{Dendrograma con enlace simple (\textit{escala vertical no proporcional; los valores de~$d$ son los reales}). El corte en el intervalo $(1{,}41;\;8{,}60)$ produce exactamente dos clusters: $\{p_1, p_2, p_3\}$ y $\{p_4, p_5\}$.}
+\label{fig:dendrograma}
+\end{figure}
+
+En la práctica, la inspección visual del dendrograma permite seleccionar el número de grupos sin asumir ninguna estructura específica, lo que constituye la ventaja definitoria de los métodos jerárquicos frente a algoritmos partitivos~\cite{murtagh2012hierarchical}.

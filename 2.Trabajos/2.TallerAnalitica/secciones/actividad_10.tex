@@ -1,0 +1,169 @@
+Las métricas de distancia cuantifican la disimilitud entre observaciones y determinan, en gran medida, la calidad y morfología de los clusters obtenidos~\cite{jain1999clustering}. La selección de una distancia adecuada debe considerar la naturaleza de las variables (continuas, binarias, nominales), la escala de las mismas y la presencia de correlaciones entre atributos~\cite{aggarwal2001surprising}.
+
+A lo largo de esta sección se emplea el par de vectores $\mathbf{x}=(4,3)^{\top}$, $\mathbf{y}=(0,0)^{\top}$ salvo indicación contraria, lo que permite comparar directamente los valores numéricos entre métricas sobre los mismos datos.
+
+% ----------------------------------------------------------------
+\subsection{Distancia euclidiana canónica}
+% ----------------------------------------------------------------
+
+\begin{definition}[\cite{duda2001pattern}]
+Sean $\mathbf{x},\mathbf{y}\in\mathbb{R}^n$. La \emph{distancia euclidiana canónica} se define como:
+\[
+d_E(\mathbf{x},\mathbf{y}) = \sqrt{\sum_{i=1}^{n}(x_i - y_i)^2} = \|\mathbf{x} - \mathbf{y}\|_2.
+\]
+\end{definition}
+
+Corresponde a la norma $L^2$ del vector diferencia y representa la distancia rectilínea entre dos puntos en el espacio euclídeo. En agrupación, minimizar la suma de distancias euclidianas al cuadrado hacia el centroide es el criterio que subyace en k-means~\cite{duda2001pattern}. Su principal limitación es la sensibilidad a la escala: variables con mayor varianza dominan el cómputo, por lo que se recomienda estandarizar los datos~\cite{aggarwal2001surprising}.
+
+\textbf{Ejemplo.} Con $\mathbf{x}=(4,3)^{\top}$ e $\mathbf{y}=(0,0)^{\top}$:
+\[
+d_E = \sqrt{(4-0)^2 + (3-0)^2} = \sqrt{16+9} = 5.
+\]
+
+% ----------------------------------------------------------------
+\subsection{Distancia de Manhattan}
+% ----------------------------------------------------------------
+
+\begin{definition}[\cite{duda2001pattern}]
+La \emph{distancia de Manhattan} (norma $L^1$, distancia taxicab) es:
+\[
+d_M(\mathbf{x},\mathbf{y}) = \sum_{i=1}^{n}|x_i - y_i| = \|\mathbf{x} - \mathbf{y}\|_1.
+\]
+\end{definition}
+
+Suma las diferencias absolutas coordenada a coordenada; al no elevar al cuadrado las diferencias, es más robusta a valores atípicos que la distancia euclidiana~\cite{duda2001pattern}. Se emplea en variantes robustas de k-means (k-medoides) y en contextos donde la distribución de los datos presenta colas pesadas.
+
+\textbf{Ejemplo.} Con $\mathbf{x}=(4,3)^{\top}$ e $\mathbf{y}=(0,0)^{\top}$:
+\[
+d_M = |4-0| + |3-0| = 4 + 3 = 7.
+\]
+
+% ----------------------------------------------------------------
+\subsection{Distancia del supremo}
+% ----------------------------------------------------------------
+
+\begin{definition}[\cite{duda2001pattern}]
+La \emph{distancia del supremo} (distancia de Chebyshev, norma $L^\infty$) es:
+\[
+d_\infty(\mathbf{x},\mathbf{y}) = \max_{1\leq i\leq n}|x_i - y_i| = \|\mathbf{x} - \mathbf{y}\|_\infty = \lim_{p\to\infty}\|\mathbf{x}-\mathbf{y}\|_p.
+\]
+\end{definition}
+
+Captura la mayor discrepancia en una sola dimensión, ignorando las demás. Su uso en clustering es apropiado cuando el peor caso en una variable resulta más relevante que la discrepancia acumulada~\cite{aggarwal2001surprising}; por ejemplo, en control de calidad donde se exige tolerancia máxima por dimensión independiente.
+
+\textbf{Ejemplo.} Con $\mathbf{x}=(4,3)^{\top}$ e $\mathbf{y}=(0,0)^{\top}$:
+\[
+d_\infty = \max(|4-0|,\,|3-0|) = \max(4,3) = 4.
+\]
+
+% ----------------------------------------------------------------
+\subsection{Distancia de Canberra}
+% ----------------------------------------------------------------
+
+\begin{definition}[\cite{lance1967mixed}]
+La \emph{distancia de Canberra} es:
+\[
+d_C(\mathbf{x},\mathbf{y}) = \sum_{i=1}^{n}\frac{|x_i - y_i|}{|x_i| + |y_i|},
+\]
+con la convención de que el $i$-ésimo término es $0$ cuando $x_i = y_i = 0$.
+\end{definition}
+
+Normaliza cada término por la magnitud total de las coordenadas involucradas, por lo que es invariante a escala y más sensible a diferencias en valores pequeños que la distancia euclidiana~\cite{emran2002robustness}. Su rango es $[0,n]$. En clustering, resulta particularmente adecuada para datos de conteo, perfiles de abundancia y detección de intrusiones~\cite{emran2002robustness}.
+
+\textbf{Ejemplo.} Con $\mathbf{x}=(4,3)^{\top}$ e $\mathbf{y}=(2,1)^{\top}$:
+\[
+d_C = \frac{|4-2|}{|4|+|2|} + \frac{|3-1|}{|3|+|1|} = \frac{2}{6} + \frac{2}{4} = 0{,}333 + 0{,}500 = 0{,}833.
+\]
+
+% ----------------------------------------------------------------
+\subsection{Distancia binaria}
+% ----------------------------------------------------------------
+
+\begin{definition}[\cite{real1996probabilistic}]
+Para vectores binarios $\mathbf{x},\mathbf{y}\in\{0,1\}^n$, se definen los conteos:
+\[
+n_{11}=|\{i:x_i=1,y_i=1\}|,\quad n_{10}=|\{i:x_i=1,y_i=0\}|,\quad n_{01}=|\{i:x_i=0,y_i=1\}|.
+\]
+La \emph{distancia binaria} (equivalente a la distancia de Jaccard) es:
+\[
+d_B(\mathbf{x},\mathbf{y}) = \frac{n_{10}+n_{01}}{n_{11}+n_{10}+n_{01}}.
+\]
+\end{definition}
+
+Mide la proporción de discordancias respecto del total de posiciones en que al menos uno de los vectores presenta el atributo~\cite{real1996probabilistic}. Los ceros conjuntos ($n_{00}$) se excluyen por no aportar información de co-presencia. Es la distancia de referencia para atributos de presencia/ausencia en clustering de documentos, perfiles genéticos y datos de encuestas dicotómicas.
+
+\textbf{Ejemplo.} Con $\mathbf{x}=(1,0,1,1,0)$ e $\mathbf{y}=(1,1,0,1,0)$:
+
+\begin{center}
+\begin{tabular}{lccccc}
+\toprule
+Posición & 1 & 2 & 3 & 4 & 5 \\
+\midrule
+$x_i$ & 1 & 0 & 1 & 1 & 0 \\
+$y_i$ & 1 & 1 & 0 & 1 & 0 \\
+\bottomrule
+\end{tabular}
+\end{center}
+Se tiene $n_{11}=2$, $n_{10}=1$, $n_{01}=1$, $n_{00}=1$, luego:
+\[
+d_B = \frac{1+1}{2+1+1} = \frac{2}{4} = 0{,}5.
+\]
+
+% ----------------------------------------------------------------
+\subsection{Distancia de Mahalanobis}
+% ----------------------------------------------------------------
+
+\begin{definition}[\cite{demaesschalck2000mahalanobis}]
+Sea $\mathbf{S}\in\mathbb{R}^{n\times n}$ la matriz de covarianza del conjunto de datos, con $\mathbf{S}$ invertible. La \emph{distancia de Mahalanobis} entre $\mathbf{x}$ e $\mathbf{y}$ es:
+\[
+d_{\mathrm{Mah}}(\mathbf{x},\mathbf{y}) = \sqrt{(\mathbf{x}-\mathbf{y})^{\top}\mathbf{S}^{-1}(\mathbf{x}-\mathbf{y})}.
+\]
+\end{definition}
+
+Generaliza la distancia euclidiana teniendo en cuenta la escala y las correlaciones entre variables: pares de coordenadas fuertemente correlacionadas reciben menor distancia efectiva que si se ignorara su covarianza~\cite{demaesschalck2000mahalanobis}. Cuando $\mathbf{S} = \mathbf{I}$, se reduce a la distancia euclidiana. Es la distancia implícita en los modelos de mezcla gaussiana (GMM), donde cada componente puede tener covarianza propia~\cite{duda2001pattern}.
+
+\textbf{Ejemplo.} Sean $\mathbf{x}=(4,3)^{\top}$, $\mathbf{y}=(0,0)^{\top}$ y
+\[
+\mathbf{S} = \begin{pmatrix}4 & 2\\ 2 & 3\end{pmatrix}, \qquad
+\mathbf{S}^{-1} = \frac{1}{8}\begin{pmatrix}3 & -2\\ -2 & 4\end{pmatrix}.
+\]
+Con $\boldsymbol{\delta} = \mathbf{x}-\mathbf{y} = (4,3)^{\top}$:
+\[
+d_{\mathrm{Mah}}^2
+= \frac{1}{8}(4,3)
+\begin{pmatrix}3 & -2\\-2 & 4\end{pmatrix}
+\begin{pmatrix}4\\3\end{pmatrix}
+= \frac{1}{8}(4,3)\begin{pmatrix}6\\4\end{pmatrix}
+= \frac{24+12}{8} = \frac{36}{8} = 4{,}5,
+\]
+de donde $d_{\mathrm{Mah}} = \sqrt{4{,}5} \approx 2{,}12$. La distancia euclidiana del mismo par era $5$; la reducción refleja que las coordenadas están positivamente correlacionadas.
+
+% ----------------------------------------------------------------
+\subsection{Distancia de Hamming}
+% ----------------------------------------------------------------
+
+\begin{definition}[\cite{hamming1950error}]
+Para dos vectores (o cadenas) de longitud $n$ sobre un alfabeto discreto, la \emph{distancia de Hamming} cuenta el número de posiciones en que difieren:
+\[
+d_H(\mathbf{x},\mathbf{y}) = \sum_{i=1}^{n}\mathbf{1}[x_i \neq y_i].
+\]
+\end{definition}
+
+Formulada originalmente para la detección y corrección de errores en códigos binarios~\cite{hamming1950error}, se aplica a cualquier alfabeto discreto. Su rango es $[0,n]$; la versión normalizada $d_H/n \in [0,1]$ permite comparar vectores de longitudes distintas. En clustering, es la distancia natural para variables categóricas codificadas, secuencias de ADN y cadenas de caracteres~\cite{jain1999clustering}. A diferencia de la distancia binaria, los ceros conjuntos sí contribuyen al cómputo.
+
+\textbf{Ejemplo.} Con $\mathbf{x}=(1,0,1,1,0,1)$ e $\mathbf{y}=(1,1,0,1,1,0)$:
+
+\begin{center}
+\begin{tabular}{lcccccc}
+\toprule
+Posición & 1 & 2 & 3 & 4 & 5 & 6 \\
+\midrule
+$x_i$ & 1 & 0 & 1 & 1 & 0 & 1 \\
+$y_i$ & 1 & 1 & 0 & 1 & 1 & 0 \\
+Discordancia & --- & \checkmark & \checkmark & --- & \checkmark & \checkmark \\
+\bottomrule
+\end{tabular}
+\end{center}
+\[
+d_H = 4.
+\]
