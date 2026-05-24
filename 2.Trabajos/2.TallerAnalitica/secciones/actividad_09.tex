@@ -1,6 +1,6 @@
 La \emph{agrupación incremental} (también denominada \textit{online} o en flujo de datos) construye y actualiza el modelo de clusters a medida que llegan nuevas observaciones, sin acceso al historial completo~\cite{gama2014survey}. Resulta indispensable cuando el volumen de datos supera la capacidad de memoria disponible, cuando la distribución subyacente evoluciona con el tiempo (\textit{concept drift}), o cuando se requiere respuesta en tiempo real~\cite{gama2014survey}.
 
-\subsection*{Algoritmo BIRCH}
+\subsection{Algoritmo BIRCH}
 
 BIRCH (\textit{Balanced Iterative Reducing and Clustering using Hierarchies}) resume cada subconjunto de puntos mediante una \emph{Característica de Clustering} (CF)~\cite{zhang1996birch}:
 \[
@@ -16,7 +16,7 @@ lo que permite incorporar un nuevo punto $\mathbf{x}$ actualizando únicamente l
 Al resumir cada subconjunto mediante su centroide, radio y diámetro (derivados de $\mathbf{LS}$ y $SS$), BIRCH asume implícitamente que los clusters tienen forma esférica, de manera análoga a k-means~\cite{zhang1996birch}. Esta suposición produce resúmenes inadecuados ante geometrías irregulares, cóncavas o con densidad variable: dos semicírculos concéntricos, por ejemplo, quedarían colapsados en la misma CF. En tales escenarios conviene recurrir a algoritmos basados en densidad como DenStream o CluStream, que no imponen restricciones geométricas al definir los micro-clusters~\cite{gama2014survey}.
 \end{remark}
 
-\subsection*{Ejemplo: monitoreo de transacciones bancarias}
+\subsection{Ejemplo: monitoreo de transacciones bancarias}
 
 Considérese un flujo de transacciones caracterizadas por monto (\$) y hora del día. El modelo aprende inicialmente dos perfiles: transacciones diurnas de bajo monto ($C_A$, horas 8–17) y nocturnas de alto monto ($C_B$, horas 19–24), como muestra la Figura~\ref{fig:incremental}.
 

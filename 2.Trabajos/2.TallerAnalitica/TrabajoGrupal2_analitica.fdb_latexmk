@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1779660683.12892 "c:/Users/sergi/Documents/Workspace/maestria/mcic-data-analytics/2.Trabajos/2.TallerAnalitica/TrabajoGrupal2_analitica.tex" "TrabajoGrupal2_analitica.pdf" "TrabajoGrupal2_analitica" 1779660688.89616 0
+["pdflatex"] 1779661652.09469 "c:/Users/sergi/Documents/Workspace/maestria/mcic-data-analytics/2.Trabajos/2.TallerAnalitica/TrabajoGrupal2_analitica.tex" "TrabajoGrupal2_analitica.pdf" "TrabajoGrupal2_analitica" 1779661656.70805 0
   "C:/Users/sergi/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1779660569 81107 70b8516c68c2e617189c5e44bfd16b96 ""
   "C:/Users/sergi/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecbx1095.pk" 1777432404 28976 8ab7a4a100adce3a4880d68fb2bc1e4e ""
   "C:/Users/sergi/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecbx1200.pk" 1777432406 31952 51e3178d84a1a0c58c6c66f34795bcf5 ""
@@ -294,10 +294,10 @@
   "C:/Users/sergi/AppData/Local/Programs/MiKTeX/tex/latex/trimspaces/trimspaces.sty" 1253169183 1380 971a51b00a14503ddf754cab24c3f209 ""
   "C:/Users/sergi/AppData/Local/Programs/MiKTeX/tex/latex/url/url.sty" 1388490452 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
   "C:/Users/sergi/AppData/Local/Programs/MiKTeX/tex/latex/xcolor/xcolor.sty" 1729265222 55384 b454dec21c2d9f45ec0b793f0995b992 ""
-  "TrabajoGrupal2_analitica.aux" 1779660688 10607 fad1f96fac176c95188afefa8678d397 "pdflatex"
-  "TrabajoGrupal2_analitica.out" 1779660688 6892 754c06469595b63d5c9811b28a634732 "pdflatex"
+  "TrabajoGrupal2_analitica.aux" 1779661656 11611 daa3c0757766f642277d714bf0180800 "pdflatex"
+  "TrabajoGrupal2_analitica.out" 1779661656 8528 bbd0273eced7000482bbb0fcc47de6ec "pdflatex"
   "TrabajoGrupal2_analitica.tex" 1779660587 14413 4c0a1d0f64c6834f2ab44457e223236e ""
-  "TrabajoGrupal2_analitica.toc" 1779660688 2711 7070596fe3b61bdce313759b48a98a49 "pdflatex"
+  "TrabajoGrupal2_analitica.toc" 1779661656 3428 71467c780f54759eff07efab0d653843 "pdflatex"
   "assets/logo_circular_negro.pdf" 1779644770 270572 78170a79ec97ab44f8e3074d2cd3b7a8 ""
   "c:/Users/sergi/Documents/Workspace/maestria/mcic-data-analytics/2.Trabajos/2.TallerAnalitica/TrabajoGrupal2_analitica.tex" 1779660587 14413 4c0a1d0f64c6834f2ab44457e223236e ""
   "secciones/actividad_01.tex" 1779644770 0 d41d8cd98f00b204e9800998ecf8427e ""
@@ -306,9 +306,9 @@
   "secciones/actividad_04.tex" 1779644770 6005 fd17375dd0563fb4ac48720ec17b1704 ""
   "secciones/actividad_05.tex" 1779644770 5795 cfed1cc217e1f035d03e42a010bad734 ""
   "secciones/actividad_06.tex" 1779644770 6198 2b13f3b5f2ebe15a34583097e6c4e342 ""
-  "secciones/actividad_07.tex" 1779660675 6082 77f8059188a0a7e50f9341528cf8e6b3 ""
-  "secciones/actividad_08.tex" 1779660559 4553 3cae99d8ded984e1d67413451f24c348 ""
-  "secciones/actividad_09.tex" 1779660565 4987 0bf94e18fef0d95a9f6af361b4080b0e ""
+  "secciones/actividad_07.tex" 1779661623 6080 b645c5c1a9548107b6539f65ee3ce79e ""
+  "secciones/actividad_08.tex" 1779661637 4550 d1e354254ee037efe7efccaa9704e5b8 ""
+  "secciones/actividad_09.tex" 1779661649 4985 d1459c5c5ba858571f6fc81a2bc737aa ""
   "secciones/actividad_10.tex" 1779660572 9049 daafa4a3141d7d28e437e93185b54625 ""
   (generated)
   "TrabajoGrupal2_analitica.aux"

@@ -1,6 +1,6 @@
 Los mapas auto-organizativos de Kohonen (SOM) y la red ART2 (\textit{Adaptive Resonance Theory~2}) son redes neuronales no supervisadas para datos continuos, pero responden a objetivos y supuestos fundamentalmente distintos~\cite{jain1999clustering}.
 
-\subsection*{SOM: preservación topológica sobre rejilla fija}
+\subsection{SOM: preservación topológica sobre rejilla fija}
 
 Un SOM consta de una capa de entrada de dimensión $n$ y una capa de salida organizada en una rejilla de dimensión fija (habitualmente 2D)~\cite{kohonen1990som}. Cada neurona $j$ posee un vector de pesos $\mathbf{w}_j \in \mathbb{R}^n$. Ante un patrón $\mathbf{x}$, se identifica la \emph{neurona ganadora} (BMU, \textit{Best Matching Unit}):
 \[
@@ -12,7 +12,7 @@ y se actualizan los pesos de $j^*$ y sus vecinas según:
 \]
 donde $\eta(t)$ es la tasa de aprendizaje y $h_{j,j^*}(t) = \exp\!\bigl(-\|r_j - r_{j^*}\|^2 / 2\sigma^2(t)\bigr)$ es la función de vecindad gaussiana~\cite{kohonen1990som}. El resultado es un mapa que preserva la topología del espacio de entrada: patrones similares activan neuronas adyacentes en la rejilla.
 
-\subsection*{ART2: plasticidad-estabilidad con vigilancia adaptativa}
+\subsection{ART2: plasticidad-estabilidad con vigilancia adaptativa}
 
 ART2 aborda explícitamente el \emph{dilema plasticidad-estabilidad}: la red debe incorporar categorías nuevas sin degradar las ya aprendidas~\cite{grossberg1987competitive}. Su mecanismo central es un parámetro de vigilancia $\rho \in (0,1)$ que controla la granularidad de las categorías~\cite{carpenter1987art2}. Cuando llega un patrón $\mathbf{x}$, se selecciona la categoría candidata $j^*$ por mayor activación; si la similitud normalizada no supera el umbral:
 \[
@@ -20,7 +20,7 @@ ART2 aborda explícitamente el \emph{dilema plasticidad-estabilidad}: la red deb
 \]
 la categoría es rechazada y se activa la siguiente candidata~\cite{carpenter1987art2}. Si ninguna supera el umbral, se crea automáticamente una categoría nueva, dejando las existentes intactas, lo que garantiza la estabilidad del conocimiento previo~\cite{grossberg1987competitive}.
 
-\subsection*{Comparación}
+\subsection{Comparación}
 
 \begin{table}[H]
 \centering
