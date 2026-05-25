@@ -1,0 +1,118 @@
+% ─────────────────────────────────────────────────────────────
+% ACTIVIDAD 2: Diferencias entre Naïve Bayes y red TAN
+% ─────────────────────────────────────────────────────────────
+
+Tanto Naïve Bayes (NB) como TAN son clasificadores que usan el teorema de Bayes para predecir a qué clase pertenece una observación, a partir de sus atributos. La diferencia clave está en cómo tratan las relaciones entre atributos~\cite{friedman1997bayesian}.
+
+\subsection{Naïve Bayes: cada atributo por su cuenta}
+
+NB asume que los atributos son independientes entre sí una vez que se conoce la clase. Es decir, saber el valor de un atributo no da información sobre otro. La clasificación se hace eligiendo la clase más probable:
+\begin{equation}
+    \hat{c} = \arg\max_{c}\; P(C{=}c)\prod_{i=1}^{n} P(X_i \mid C{=}c).
+    \label{eq:nb}
+\end{equation}
+
+En la Figura~\ref{fig:nb-structure} se ve su estructura: la clase $C$ influye en todos los atributos, pero entre atributos no hay conexión alguna.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[
+        node distance=1.6cm,
+        every node/.style={draw, circle, minimum size=0.9cm, font=\small},
+        arrow/.style={-{Stealth[length=2.5mm]}, thick}
+    ]
+        \node[fill=blue!15] (C) {$C$};
+        \node[below left=1.3cm and 1.5cm of C] (X1) {$X_1$};
+        \node[below left=1.3cm and 0cm of C] (X2) {$X_2$};
+        \node[below right=1.3cm and 0cm of C] (X3) {$X_3$};
+        \node[below right=1.3cm and 1.5cm of C] (X4) {$X_4$};
+        \draw[arrow] (C) -- (X1); \draw[arrow] (C) -- (X2);
+        \draw[arrow] (C) -- (X3); \draw[arrow] (C) -- (X4);
+    \end{tikzpicture}
+    \caption{Estructura de Naïve Bayes: solo la clase influye en los atributos.}
+    \label{fig:nb-structure}
+\end{figure}
+
+\subsection{TAN: permitir una conexión entre atributos}
+
+TAN (\emph{Tree Augmented Naïve Bayes}) reconoce que en la realidad los atributos SÍ pueden estar relacionados. Por eso permite que cada atributo dependa, además de la clase, de \emph{otro atributo}~\cite{friedman1997bayesian}:
+\begin{equation}
+    P(\mathbf{X} \mid C) = \prod_{i=1}^{n} P(X_i \mid C, \mathrm{Pa}(X_i)).
+    \label{eq:tan}
+\end{equation}
+
+Para decidir qué atributos conectar, se usa el algoritmo de Chow--Liu~\cite{chowliu1968}: se mide cuánta información comparte cada par de atributos (información mutua condicional) y se construye un árbol con las conexiones más fuertes.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[
+        node distance=1.6cm,
+        every node/.style={draw, circle, minimum size=0.9cm, font=\small},
+        arrow/.style={-{Stealth[length=2.5mm]}, thick},
+        dep/.style={-{Stealth[length=2.5mm]}, thick, red!60!black, dashed}
+    ]
+        \node[fill=blue!15] (C) {$C$};
+        \node[below left=1.3cm and 1.5cm of C] (X1) {$X_1$};
+        \node[below left=1.3cm and 0cm of C] (X2) {$X_2$};
+        \node[below right=1.3cm and 0cm of C] (X3) {$X_3$};
+        \node[below right=1.3cm and 1.5cm of C] (X4) {$X_4$};
+        \draw[arrow] (C) -- (X1); \draw[arrow] (C) -- (X2);
+        \draw[arrow] (C) -- (X3); \draw[arrow] (C) -- (X4);
+        \draw[dep] (X1) -- (X2); \draw[dep] (X2) -- (X3); \draw[dep] (X3) -- (X4);
+    \end{tikzpicture}
+    \caption{Estructura TAN: las aristas rojas muestran dependencias entre atributos.}
+    \label{fig:tan-structure}
+\end{figure}
+
+\subsection{Comparación directa}
+
+\begin{table}[H]
+    \centering\small
+    \caption{Diferencias entre NB y TAN.}
+    \label{tab:nb-vs-tan}
+    \begin{tabular}{p{2.8cm} p{4.2cm} p{4.8cm}}
+        \toprule
+        \textbf{Criterio} & \textbf{Naïve Bayes} & \textbf{TAN} \\
+        \midrule
+        Relación entre atributos & Ignorada por completo & Captura la más importante \\[3pt]
+        Cantidad de parámetros & Pocos (simple) & Más (por las conexiones extra) \\[3pt]
+        Riesgo de sobreajuste & Bajo & Moderado \\[3pt]
+        Cuándo conviene & Pocos datos, atributos poco relacionados & Datos suficientes, atributos correlacionados \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Ejemplo NB: clasificación de correos}
+
+Se quiere clasificar correos como \textsc{spam} o \textsc{no-spam} usando tres palabras clave: $X_1$ = ``oferta'', $X_2$ = ``urgente'', $X_3$ = ``adjunto''. De 8 correos de entrenamiento (4 spam, 4 no-spam), se estiman las probabilidades:
+
+\begin{center}\small
+\begin{tabular}{lcc}
+    \toprule
+    & $P(X_i{=}1 \mid \text{spam})$ & $P(X_i{=}1 \mid \text{no-spam})$ \\
+    \midrule
+    Oferta  & $3/4$ & $1/4$ \\
+    Urgente & $3/4$ & $1/4$ \\
+    Adjunto & $1/4$ & $3/4$ \\
+    \bottomrule
+\end{tabular}
+\end{center}
+
+Para un correo nuevo con ``oferta'' y ``urgente'' pero sin ``adjunto'' ($X_1{=}1, X_2{=}1, X_3{=}0$):
+\begin{align*}
+    P(\text{spam} \mid \mathbf{X}) &\propto 0{,}5 \times \tfrac{3}{4} \times \tfrac{3}{4} \times \tfrac{3}{4} = 0{,}2109, \\
+    P(\text{no-spam} \mid \mathbf{X}) &\propto 0{,}5 \times \tfrac{1}{4} \times \tfrac{1}{4} \times \tfrac{1}{4} = 0{,}0078.
+\end{align*}
+
+Normalizando: $P(\text{spam}) = 96{,}4\%$. Se clasifica como \textbf{spam}. NB funciona bien aquí porque simplemente multiplica las probabilidades de cada palabra por separado.
+
+\subsection{Ejemplo TAN: diagnóstico médico}
+
+Un médico quiere diagnosticar una enfermedad usando tres síntomas: $X_1$ = fiebre, $X_2$ = tos, $X_3$ = dolor de cabeza. En la práctica, fiebre y tos suelen aparecer juntas (una infección causa ambas), pero NB ignora esta relación.
+
+TAN mide cuánto se relacionan los síntomas entre sí: la conexión fiebre--tos es fuerte ($I = 0{,}35$), fiebre--dolor es moderada ($I = 0{,}12$), y tos--dolor es débil ($I = 0{,}08$). El árbol resultante conecta la fiebre con los otros dos síntomas:
+\[
+    P(\mathbf{X} \mid C) = P(X_1 \mid C) \cdot P(X_2 \mid C, X_1) \cdot P(X_3 \mid C, X_1).
+\]
+
+Esto permite distinguir, por ejemplo, que la probabilidad de tener tos \emph{dado que hay fiebre} es distinta a tener tos \emph{sin fiebre} --- una diferencia clínicamente importante que NB no puede capturar~\cite{friedman1997bayesian}.

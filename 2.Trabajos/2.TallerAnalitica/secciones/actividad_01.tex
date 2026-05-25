@@ -1,0 +1,106 @@
+% ─────────────────────────────────────────────────────────────
+% ACTIVIDAD 1: Backpropagation con tangente hiperbólica
+% ─────────────────────────────────────────────────────────────
+
+Una red neuronal aprende en dos pasos: primero calcula una salida con los datos de entrada (\emph{forward}), y luego compara esa salida con la respuesta correcta para ajustar sus pesos (\emph{backward}). Este proceso se llama retropropagación o \emph{backpropagation}~\cite{rumelhart1986learning}, y la forma en que se ajustan los pesos depende directamente de la función de activación elegida.
+
+\subsection{¿Por qué usar la tangente hiperbólica?}
+
+La tangente hiperbólica transforma cualquier valor de entrada a un número entre $-1$ y $+1$:
+\begin{equation}
+    \varphi(v) = \tanh(v) = \frac{e^{v} - e^{-v}}{e^{v} + e^{-v}}.
+    \label{eq:tanh}
+\end{equation}
+
+Su principal ventaja frente a la sigmoide (que va de $0$ a $1$) es que sus salidas están centradas en cero, lo que produce ajustes de pesos más efectivos y una convergencia más rápida~\cite{lecun2012efficient}. Además, su derivada tiene una forma muy conveniente: si ya se conoce la salida $y = \tanh(v)$, la derivada se calcula sin necesidad de reevaluar exponenciales:
+\begin{equation}
+    \varphi'(v) = 1 - y^{2}.
+    \label{eq:tanh-deriv}
+\end{equation}
+
+\subsection{El algoritmo paso a paso}
+
+Sea una red con $L$ capas, donde $w_{ij}^{(\ell)}$ es el peso que conecta la neurona $j$ de la capa anterior con la neurona $i$ de la capa $\ell$, $b_{i}^{(\ell)}$ es el sesgo, y $\eta$ es la tasa de aprendizaje (qué tan grande es cada ajuste).
+
+\textbf{Paso 1 --- Forward:} se calcula la salida de cada neurona, capa por capa:
+\begin{equation}
+    v_{i}^{(\ell)} = \sum_{j} w_{ij}^{(\ell)} y_{j}^{(\ell-1)} + b_{i}^{(\ell)}, \qquad y_{i}^{(\ell)} = \tanh(v_{i}^{(\ell)}).
+\end{equation}
+
+\textbf{Paso 2 --- Error:} se mide qué tan lejos está la salida de la respuesta correcta:
+\[
+    E = \tfrac{1}{2}\sum_{i}(d_i - y_i^{(L)})^2.
+\]
+
+\textbf{Paso 3 --- Backward:} se calcula la ``culpa'' ($\delta$) de cada neurona en el error. En la capa de salida, la culpa es directa; en las capas ocultas, se reparte proporcionalmente a los pesos:
+\begin{align}
+    \delta_{i}^{(L)} &= (d_i - y_i^{(L)})\;(1 - [y_i^{(L)}]^2), \label{eq:delta-out}\\
+    \delta_{i}^{(\ell)} &= (1 - [y_i^{(\ell)}]^2) \sum_{k} \delta_k^{(\ell+1)} w_{ki}^{(\ell+1)}, \quad \ell < L. \label{eq:delta-hid}
+\end{align}
+
+\textbf{Paso 4 --- Actualización:} cada peso se ajusta en la dirección que reduce el error:
+\begin{equation}
+    w_{ij}^{(\ell)} \leftarrow w_{ij}^{(\ell)} + \eta\,\delta_i^{(\ell)}\,y_j^{(\ell-1)}, \qquad b_i^{(\ell)} \leftarrow b_i^{(\ell)} + \eta\,\delta_i^{(\ell)}.
+\end{equation}
+
+\subsection{Ejemplo numérico: XOR con red 2-2-1}
+
+Para ver el algoritmo en acción, se entrena una red pequeña (2 entradas, 2 neuronas ocultas, 1 salida) para aprender la función XOR. Como $\tanh$ produce valores entre $-1$ y $+1$, las etiquetas se codifican en ese rango.
+
+Se presentan los pesos iniciales (valores pequeños aleatorios) y se muestra una iteración completa con el patrón $(x_1, x_2) = (-1, +1)$, cuya salida deseada es $d = +1$, y $\eta = 0{,}5$.
+
+\begin{table}[H]
+    \centering\small
+    \caption{Pesos iniciales de la red.}
+    \label{tab:pesos-iniciales}
+    \begin{tabular}{lccc}
+        \toprule
+        \textbf{Neurona} & $w_{i1}$ & $w_{i2}$ & $b_i$ \\
+        \midrule
+        $h_1$ (oculta) & $0{,}30$ & $0{,}50$ & $0{,}10$ \\
+        $h_2$ (oculta) & $-0{,}20$ & $0{,}40$ & $-0{,}10$ \\
+        $o_1$ (salida) & $0{,}40$ & $-0{,}30$ & $0{,}20$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\textbf{Forward} --- se calculan las salidas de cada neurona:
+\begin{align*}
+    v_1^{(1)} &= 0{,}30(-1) + 0{,}50(+1) + 0{,}10 = 0{,}30, & y_1^{(1)} &= \tanh(0{,}30) = 0{,}2913, \\
+    v_2^{(1)} &= -0{,}20(-1) + 0{,}40(+1) - 0{,}10 = 0{,}50, & y_2^{(1)} &= \tanh(0{,}50) = 0{,}4621, \\
+    v_1^{(2)} &= 0{,}40(0{,}2913) - 0{,}30(0{,}4621) + 0{,}20 = 0{,}1779, & y_1^{(2)} &= \tanh(0{,}1779) = 0{,}1762.
+\end{align*}
+
+La red responde $0{,}1762$ cuando debería responder $+1$. Error: $E = \tfrac{1}{2}(1 - 0{,}1762)^2 = 0{,}3393$.
+
+\textbf{Backward} --- se calcula la culpa de cada neurona:
+\begin{align*}
+    \delta_1^{(2)} &= (1 - 0{,}1762)(1 - 0{,}1762^2) = 0{,}7983, \\
+    \delta_1^{(1)} &= (1 - 0{,}2913^2) \times 0{,}7983 \times 0{,}40 = 0{,}2922, \\
+    \delta_2^{(1)} &= (1 - 0{,}4621^2) \times 0{,}7983 \times (-0{,}30) = -0{,}1884.
+\end{align*}
+
+\textbf{Actualización} --- cada peso se mueve para reducir el error:
+
+\begin{table}[H]
+    \centering\small
+    \caption{Pesos antes y después de una iteración.}
+    \label{tab:pesos-actualizados}
+    \begin{tabular}{lccc}
+        \toprule
+        \textbf{Peso} & \textbf{Antes} & \textbf{Después} & \textbf{Cambio} \\
+        \midrule
+        $w_{11}^{(1)}$ & $0{,}3000$ & $0{,}1539$ & $-0{,}1461$ \\
+        $w_{12}^{(1)}$ & $0{,}5000$ & $0{,}6461$ & $+0{,}1461$ \\
+        $b_1^{(1)}$    & $0{,}1000$ & $0{,}2461$ & $+0{,}1461$ \\
+        $w_{21}^{(1)}$ & $-0{,}2000$ & $-0{,}1058$ & $+0{,}0942$ \\
+        $w_{22}^{(1)}$ & $0{,}4000$ & $0{,}3058$ & $-0{,}0942$ \\
+        $b_2^{(1)}$    & $-0{,}1000$ & $-0{,}1942$ & $-0{,}0942$ \\
+        $w_{11}^{(2)}$ & $0{,}4000$ & $0{,}5163$ & $+0{,}1163$ \\
+        $w_{12}^{(2)}$ & $-0{,}3000$ & $-0{,}1156$ & $+0{,}1844$ \\
+        $b_1^{(2)}$    & $0{,}2000$ & $0{,}5992$ & $+0{,}3992$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Los pesos de la capa de salida cambian más que los de la capa oculta, porque están más cerca del error. A medida que el error se propaga hacia atrás, se atenúa al multiplicarse por $(1-y^2)$ en cada capa. Repitiendo este proceso con los cuatro patrones XOR durante múltiples épocas, la red converge en 500--2000 iteraciones~\cite{lecun2012efficient}.
