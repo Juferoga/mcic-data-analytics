@@ -2,7 +2,7 @@
 %  Analítica de datos 
 %  Universidad Distrital Francisco José de Caldas — 2026-1
 % ============================================================
-\documentclass[12pt,a4paper]{article}
+\documentclass[11pt,a4paper]{article}
 
 % ── Codificación y lenguaje ──────────────────────────────────
 \usepackage[utf8]{inputenc}
@@ -16,10 +16,10 @@
 
 % ── Geometría y tipografía ───────────────────────────────────
 \usepackage{geometry}
-\geometry{top=2.5cm, bottom=2.5cm, left=3cm, right=2.5cm, headheight=14pt}
+\geometry{top=2.0cm, bottom=2.0cm, left=2.0cm, right=2.0cm, headheight=14pt}
 \usepackage[protrusion=true,expansion=false]{microtype}
 \usepackage{setspace}
-\onehalfspacing
+\singlespacing
 
 % ── Gráficos y flotantes ─────────────────────────────────────
 \usepackage{graphicx}
@@ -32,6 +32,8 @@
 \usepackage{xcolor}
 \usepackage{enumitem}
 \usepackage{parskip}
+% Compactar espacio entre párrafos para reducir páginas
+\setlength{\parskip}{0pt}
 
 % ── TikZ ─────────────────────────────────────────────────────
 \usepackage{tikz}
@@ -93,29 +95,27 @@
 \usepackage{titling}
 \pretitle{%
     \begin{center}
-    \includegraphics[width=0.40\textwidth]{assets/logo_circular_negro.pdf}\par\vspace{1em}
+    \vspace*{1.2cm}
+    \includegraphics[width=0.30\textwidth]{assets/logo_circular_negro.pdf}\par\vspace{1.2em}
     \LARGE\bfseries
 }
-\posttitle{\par\end{center}\vspace{0.8em}}
+\posttitle{\par\end{center}\vspace{1.8em}}
 
 % ============================================================
 %  METADATOS
 % ============================================================
 \title{%
-    \textbf{Taller grupal}\\[4pt]
+    \textbf{Taller grupal}\\[2pt]
     \large analítica de datos
-    \vspace{2em}
 }
 \author{%
     \textit{Juan Felipe Rodríguez G.} \quad 20261595004 \\
     \textit{Carlos Stiven Mora Hoyos} \quad 20261595003 \\
-    \vspace{3em}
-    \textit{Sergio Santiago Duarte Rojas} \quad 20261595002 \\[6pt]
-    \vspace{1em}
+    \textit{Sergio Santiago Duarte Rojas} \quad 20261595002 \\
+    \\
+    \vspace{2.4em}
     Curso: Analítica de datos\\
-    \vspace{1em}
     Universidad Distrital Francisco José de Caldas
-    \vspace{1em}
 }
 \date{Bogotá, Colombia \\ \today}
 
