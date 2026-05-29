@@ -42,3 +42,19 @@ tmp/
 
 # Ignore build artifacts from pip
 pip-wheel-metadata/
+
+# LaTeX
+*.aux
+*.fdb_latexmk
+*.fls
+*.out
+*.toc
+*.synctex.gz
+*.bbl
+*.blg
+*.bcf
+*.run.xml
+*.spl
+*.nav
+*.snm
+*.vrb
