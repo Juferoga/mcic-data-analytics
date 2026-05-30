@@ -120,8 +120,8 @@
 	\ifnum\theframenumber=1
 		% not display the headline for the title page
 	\else
-		\begin{beamercolorbox}[wd=\paperwidth,ht=40pt]{head}
-			\hspace{410pt}\includegraphics[width=40pt]{source/logo-white.pdf}
+		\begin{beamercolorbox}[wd=\paperwidth,ht=30pt,dp=10pt]{head}
+			\hfill\raisebox{-5pt}{\includegraphics[height=25pt]{source/ud-logo-white.pdf}}\hspace*{15pt}
 		\end{beamercolorbox}
 	\fi
 }
@@ -141,12 +141,12 @@
 % title page
 \setbeamertemplate{title page}{
 	\begin{picture}(0,0)
-		\put(-24,67){\includegraphics[width=140pt]{source/logo-name}}
+		\put(-20,62){\includegraphics[width=135pt]{source/ud-logo-name.pdf}}
         \put(-5,-77){
             \begin{beamercolorbox}[wd=1.1\paperwidth,ht=140pt]{jumbo}
             \end{beamercolorbox}
         }
-        \put(243,-135){\includegraphics[width=250pt]{source/logo-trans}}
+        \put(243,-135){\tikz \node[inner sep=0pt, anchor=south west] {\includegraphics[width=250pt]{source/udfc-logo-white.pdf}};}
 		\put(0,25){%
 			\begin{minipage}{300pt}
 				\usebeamerfont{title}\usebeamercolor[fg]{title}\inserttitle\par
@@ -163,7 +163,7 @@
 		\put(0,-70){%
 			\usebeamerfont{date}\usebeamercolor[fg]{date}\insertdate
 		}
-        \put(285,-118){\includegraphics[width=140pt]{source/tagline}}
+        \put(325,-138){\includegraphics[width=90pt]{source/mcic.jpeg}}
 	\end{picture}
 }
 
@@ -191,9 +191,9 @@
 	\setbeamertemplate{headline}{}
 	\setbeamertemplate{footline}{}
 	\begin{frame}[c]{}
-		\begin{picture}(0,0)
-			\put(-28.5,-25){\includegraphics[width=1.01\paperwidth]{source/last-frame}}
-		\end{picture}
+		\begin{center}
+			\includegraphics[width=0.35\paperwidth]{source/ud-logo-circular.png}
+		\end{center}
 	\end{frame}
 \endgroup
 }
@@ -209,7 +209,7 @@
 \AtBeginSection[]
 {
     \begingroup
-    \begin{frame}{Contents}{}
+    \begin{frame}{Contenido}{}
     	\begin{picture}(0,0)
     		\put(-42,-170){\includegraphics[width=1.1\paperwidth]{source/silhouette}}
     	\end{picture}

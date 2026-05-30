@@ -1,6 +1,16 @@
+% !TeX program = xelatex
 \documentclass[10pt,aspectratio=169]{beamer}
+\usepackage{fontspec}
+\setmainfont{Cambria}[
+  Path=fonts/,
+  UprightFont=cambria.ttc,
+  BoldFont=cambriab.ttf,
+  ItalicFont=cambriai.ttf,
+  BoldItalicFont=cambriaz.ttf
+]
 \usepackage{poly}
 \usepackage{booktabs}
+\usepackage{colortbl}
 \usepackage[spanish]{babel}
 
 % Colores para tablas (usados en celdas destacadas)
@@ -12,9 +22,8 @@
 % ================================================================================
 
 \title{Evaluación comparativa de clasificadores de machine learning para la detección de cáncer de mama}
-\subtitle{}
-\author{Carlos Mora, Rodriguez Juan Felipe, Sergio Duarte}
-\institute[UDFJC]{Universidad Distrital Francisco José de Caldas\\Analítica de Datos}
+\author{Carlos Mora, Juan Felipe Rodríguez, Sergio Duarte}
+\institute[UDFJC]{Universidad Distrital Francisco José de Caldas -- Analítica de Datos}
 \date{Mayo 2026}
 
 % ================================================================================
@@ -29,89 +38,89 @@
 % ------------------------------------------------------------------------------
 
 \begin{frame}{Contexto}
-El cáncer de mama es el cáncer más frecuente a nivel mundial y la principal causa de muerte oncológica en mujeres.
-
-\vspace{1em}
-\begin{block}{Datos clave}
+\begin{columns}
+\begin{column}{0.6\textwidth}
+\begin{block}{El problema}
 \begin{itemize}
-  \item Las tasas de supervivencia a cinco años superan el 90\% cuando el diagnóstico se realiza en estadios tempranos.
-  \item Los algoritmos de Machine Learning han demostrado capacidad comparable o superior a especialistas para clasificar muestras celulares como benignas o malignas.
-  \item La clasificación bayesiana permite cuantificar las probabilidades de diagnóstico correcto e incorrecto.
+  \item Cáncer de mama: el más frecuente a nivel mundial.
+  \item Principal causa de muerte oncológica en mujeres.
+  \item \textbf{Supervivencia >90\%} si se detecta en estadios tempranos.
 \end{itemize}
 \end{block}
+
+\vspace{0.5em}
+\begin{block}{La oportunidad}
+\begin{itemize}
+  \item ML clasifica muestras celulares con resultados comparables o superiores a especialistas.
+  \item La clasificación bayesiana permite cuantificar probabilidades de diagnóstico.
+\end{itemize}
+\end{block}
+\end{column}
+
+\begin{column}{0.4\textwidth}
+\begin{figure}
+\centering
+\includegraphics[width=0.9\textwidth]{../documento/images/fig_global_stats_2020.png}
+\end{figure}
+\end{column}
+\end{columns}
 \end{frame}
 
 \begin{frame}{Motivación}
-\begin{block}{Problema central}
-La efectividad de los modelos depende críticamente del flujo de preprocesamiento:
+\begin{alertblock}{El diagnóstico actual tiene grietas}
+La efectividad de los modelos depende del flujo completo:
 \begin{itemize}
-  \item Selección de atributos
-  \item Normalización
-  \item Elección de métricas adecuadas al contexto clínico
+  \item \textbf{Selección de atributos} -- ¿qué variables realmente importan?
+  \item \textbf{Normalización} -- ¿las escalas afectan el modelo?
+  \item \textbf{Métricas adecuadas} -- ¿accuracy basta en medicina?
 \end{itemize}
-\end{block}
+\end{alertblock}
 
 \vspace{1em}
-Este trabajo implementa un flujo completo de analítica de datos, comparando nueve clasificadores bajo métricas clínicamente relevantes.
+\textbf{Este trabajo:} un flujo integrado de analítica de datos evaluando \textbf{9 clasificadores} con métricas clínicamente relevantes.
 \end{frame}
 
 % ------------------------------------------------------------------------------
 \section{Problemática}
 % ------------------------------------------------------------------------------
 
-\begin{frame}{Estadísticas globales del cáncer de mama}
+\begin{frame}{¿Por qué esto importa?}
 \begin{columns}
 \begin{column}{0.5\textwidth}
 \begin{block}{Cifras 2020 (GLOBOCAN)}
 \begin{itemize}
-  \item 2.3 millones de nuevos casos diagnosticados
-  \item 685,000 muertes registradas
-  \item En Colombia: 140,000+ casos prevalentes
+  \item 2.3 millones de nuevos casos
+  \item 685,000 muertes
+  \item Colombia: 140,000+ casos prevalentes
   \item 4,322 defunciones en 2023
 \end{itemize}
 \end{block}
 \end{column}
 
 \begin{column}{0.5\textwidth}
-\vspace{-0.5em}
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{../documento/images/fig_global_stats_2020.png}
-\end{figure}
+\begin{block}{El diagnóstico por FNA}
+Depende de la \textbf{evaluación subjetiva} del patólogo.
+
+\vspace{0.5em}
+\textbf{Tasa de discordancia inter-observador:} 15--20\% en casos limítrofes.
+\end{block}
 \end{column}
 \end{columns}
-\end{frame}
-
-\begin{frame}{Diagnóstico convencional: limitaciones}
-\begin{block}{Aspiración con aguja fina (FNA)}
-El diagnóstico depende de la evaluación subjetiva del patólogo.
-\end{block}
 
 \vspace{1em}
 \begin{columns}
 \begin{column}{0.5\textwidth}
-\begin{block}{Falso Negativo}
-\begin{itemize}
-  \item Tumor maligno clasificado como benigno
-  \item Retraso en el tratamiento oncológico
-  \item Consecuencias potencialmente fatales
-\end{itemize}
-\end{block}
+\begin{exampleblock}{Falso Negativo}
+Tumor maligno como benigno $\rightarrow$ \textbf{no tratar} a quien lo necesita.
+\end{exampleblock}
 \end{column}
 
 \begin{column}{0.5\textwidth}
 \begin{block}{Falso Positivo}
-\begin{itemize}
-  \item Tumor benigno clasificado como maligno
-  \item Procedimientos invasivos innecesarios
-  \item Ansiedad para el paciente
-\end{itemize}
+Tumor benigno como maligno $\rightarrow$ exámenes innecesarios y ansiedad.
 \end{block}
 \end{column}
 \end{columns}
-
-\vspace{1em}
-\textbf{Tasa de discordancia inter-observador}: 15--20\% en casos limítrofes.
 \end{frame}
 
 % ------------------------------------------------------------------------------
@@ -126,9 +135,9 @@ Implementar un flujo de analítica de datos para la clasificación de tumores ma
 \vspace{1em}
 \begin{block}{Objetivos Específicos}
 \begin{enumerate}
-  \item Aplicar preprocesamiento riguroso y cuantificar su impacto en el rendimiento.
-  \item Comparar nueve clasificadores bajo condiciones experimentales idénticas.
-  \item Analizar la estabilidad de los modelos mediante validación cruzada 5-fold.
+  \item Preprocesamiento riguroso: detección de anómalos, normalización, selección de atributos.
+  \item Comparar 9 clasificadores bajo condiciones experimentales idénticas.
+  \item Analizar estabilidad mediante validación cruzada 5-fold.
 \end{enumerate}
 \end{block}
 \end{frame}
@@ -137,42 +146,33 @@ Implementar un flujo de analítica de datos para la clasificación de tumores ma
 \section{Dataset}
 % ------------------------------------------------------------------------------
 
-\begin{frame}{Wisconsin Breast Cancer Diagnostic Dataset (WDBC)}
+\begin{frame}{Wisconsin Breast Cancer Diagnostic Dataset}
 \begin{columns}
-\begin{column}{0.5\textwidth}
-\begin{block}{Características del dataset}
+\begin{column}{0.55\textwidth}
+\begin{block}{Características}
 \begin{itemize}
   \item \textbf{569 instancias}: 357 benignas (62.7\%) y 212 malignas (37.3\%)
   \item \textbf{30 características numéricas continuas}
-  \item Calculadas a partir de imágenes de aspirados con aguja fina (FNA)
-  \item Variable objetivo: diagnóstico (Maligno/Benigno)
-  \item Sin valores faltantes
+  \item Calculadas a partir de imágenes FNA
+  \item Variable objetivo: Maligno (1) / Benigno (0)
+  \item \textbf{Sin valores faltantes}
 \end{itemize}
 \end{block}
 \end{column}
 
-\begin{column}{0.5\textwidth}
-\vspace{-0.5em}
+\begin{column}{0.45\textwidth}
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{../documento/images/fig_class_distribution.png}
-\caption{Distribución de clases en WDBC}
+\includegraphics[width=0.85\textwidth]{../documento/images/fig_class_distribution.png}
+\caption{\tiny Distribución de clases en WDBC}
 \end{figure}
 \end{column}
 \end{columns}
-\end{frame}
 
-\begin{frame}{Desbalance de clases}
-\begin{block}{Implicación crítica}
-\begin{itemize}
-  \item Un clasificador que siempre prediga ``benigno'' obtendría 62.7\% de exactitud sin detectar ningún tumor maligno.
-  \item La exactitud por sí sola es \textbf{insuficiente} en problemas médicos con desbalance.
-  \item Se requieren métricas complementarias: precisión, recall, F1-score.
-\end{itemize}
-\end{block}
-
-\vspace{1em}
-\textbf{Motivación}: uso del Recall de la clase Maligno como métrica principal.
+\vspace{0.5em}
+\begin{alertblock}{Trampa del accuracy}
+Un clasificador que siempre prediga ``benigno'' obtendría 62.7\% de exactitud \textbf{sin detectar ningún tumor maligno}.
+\end{alertblock}
 \end{frame}
 
 % ------------------------------------------------------------------------------
@@ -180,29 +180,36 @@ Implementar un flujo de analítica de datos para la clasificación de tumores ma
 % ------------------------------------------------------------------------------
 
 \begin{frame}{Flujo metodológico}
-\begin{block}{Fases del proceso}
-\begin{enumerate}
-  \item \textbf{EDA}: Análisis Exploratorio de Datos
-  \item \textbf{Preprocesamiento}: detección de anómalos, normalización z-score
-  \item \textbf{Selección de atributos}: intersección de 2 métodos
-  \item \textbf{División de datos}: 75\% entrenamiento / 25\% prueba
-  \item \textbf{Modelado}: 9 clasificadores ML
-  \item \textbf{Evaluación}: métricas y validación cruzada
-\end{enumerate}
-\end{block}
+\begin{center}
+\begin{tabular}{cl}
+\toprule
+\textbf{Fase} & \textbf{Descripción} \\
+\midrule
+1. EDA & Análisis Exploratorio de Datos \\
+2. Preprocesamiento & Detección de anómalos, normalización z-score \\
+3. Selección de atributos & Intersección de 2 métodos \\
+4. División de datos & 75\% entrenamiento / 25\% prueba \\
+5. Modelado & 9 clasificadores ML \\
+6. Evaluación & Recall Maligno como métrica principal \\
+\bottomrule
+\end{tabular}
+\end{center}
 \end{frame}
 
 \begin{frame}{Análisis Exploratorio (EDA)}
 \begin{columns}
 \begin{column}{0.5\textwidth}
 \begin{block}{Mapa de correlación}
-Se identifican bloques de alta correlación entre las versiones \textit{mean}, \textit{error} y \textit{worst} de los mismos atributos (radio, área, perímetro, etc.).
+Se identifican \textbf{bloques de alta correlación} entre las versiones \textit{mean}, \textit{error} y \textit{worst} de los mismos atributos.
+
+\vspace{0.5em}
+\textbf{Implicación:} redundancia que justifica selección de atributos.
 \end{block}
 
-\vspace{1em}
+\vspace{0.5em}
 \begin{block}{Distribuciones por clase}
 \begin{itemize}
-  \item \texttt{mean area} y \texttt{mean concavity}: alta separación
+  \item \texttt{mean area}, \texttt{mean concavity}: alta separación
   \item \texttt{mean texture}: considerable solapamiento
 \end{itemize}
 \end{block}
@@ -211,78 +218,98 @@ Se identifican bloques de alta correlación entre las versiones \textit{mean}, \
 \begin{column}{0.5\textwidth}
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{../documento/images/fig_correlation_heatmap.png}
-\caption{Mapa de correlación (30 características)}
+\includegraphics[width=0.85\textwidth]{../documento/images/fig_correlation_heatmap.png}
+\caption{\tiny Mapa de correlación (30 características)}
 \end{figure}
 \end{column}
 \end{columns}
 \end{frame}
 
-\begin{frame}{Distribuciones de características}
+\begin{frame}{Distribuciones de características clave}
 \begin{figure}
 \centering
-\includegraphics[width=0.75\textwidth]{../documento/images/fig_feature_distributions.png}
-\caption{Distribución de características clave por clase}
+\includegraphics[width=0.7\textwidth]{../documento/images/fig_feature_distributions.png}
+\caption{Distribución de características clave por clase. Menor solapamiento = mayor poder discriminativo.}
 \end{figure}
 \end{frame}
 
 \begin{frame}{Preprocesamiento}
+\begin{columns}
+\begin{column}{0.5\textwidth}
 \begin{block}{Detección de valores anómalos}
-Regla de tres sigma ($\mu \pm 3\sigma$): se detectaron 74 instancias (13\%).
-
-\textbf{Decisión}: se conservaron todos los valores anómalos — corresponden a mediciones clínicas válidas.
+Regla de tres sigma: $\mu \pm 3\sigma$
+\begin{itemize}
+  \item 74 instancias detectadas (13\%)
+  \item \textbf{Decisión: se conservan} -- son mediciones clínicas válidas
+  \item Eliminarlos sesgaría el modelo contra tumores atípicos
+\end{itemize}
 \end{block}
+\end{column}
 
-\vspace{1em}
+\begin{column}{0.5\textwidth}
 \begin{block}{Normalización z-score}
 \begin{equation*}
 z = \frac{x - \mu}{\sigma}
 \end{equation*}
 \begin{itemize}
-  \item Escalador ajustado \textbf{únicamente} en entrenamiento (\texttt{fit} solo en train)
+  \item Escalador ajustado \textbf{únicamente} en entrenamiento
   \item Evita \textit{data leakage}
-  \item Indispensable para SVM y KNN (algoritmos basados en distancias)
+  \item Indispensable para SVM y KNN
 \end{itemize}
 \end{block}
+\end{column}
+\end{columns}
 \end{frame}
 
 % ------------------------------------------------------------------------------
 \section{Selección de Atributos}
 % ------------------------------------------------------------------------------
 
-\begin{frame}{Métodos aplicados}
-\begin{block}{Intersección de dos técnicas}
-\begin{enumerate}
-  \item \textbf{Correlación con la variable objetivo}: $|r| \geq 0.50$ (16 características)
-  \item \textbf{Prueba de separación de medias}: $TEST \geq 3.0$ (16 características)
-\end{enumerate}
+\begin{frame}{Intersección de dos métodos}
+\begin{block}{Técnica 1: Correlación con la variable objetivo}
+$|r| \geq 0.50$ $\rightarrow$ 16 características
 \end{block}
 
-\vspace{1em}
+\vspace{0.5em}
+\begin{block}{Técnica 2: Separación de medias}
+$TEST = \frac{|\bar{x}_B - \bar{x}_M|}{SE(A-B)} \geq 3.0$ $\rightarrow$ 16 características
+\end{block}
+
+\vspace{0.5em}
+\begin{alertblock}{Resultado}
+\textbf{Intersección: 15 características} (reducción del 50\%)
+
+Un atributo es relevante \textit{solo} si pasa \textbf{ambos} filtros.
+\end{alertblock}
+\end{frame}
+
+\begin{frame}{Visualización de los métodos}
 \begin{columns}
 \begin{column}{0.5\textwidth}
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{../documento/images/fig_correlation_target.png}
+\includegraphics[width=0.9\textwidth]{../documento/images/fig_correlation_target.png}
+\caption{\tiny Correlación con la variable objetivo}
 \end{figure}
 \end{column}
 
 \begin{column}{0.5\textwidth}
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{../documento/images/fig_mean_variance_test.png}
+\includegraphics[width=0.9\textwidth]{../documento/images/fig_mean_variance_test.png}
+\caption{\tiny Prueba de separación de medias}
 \end{figure}
 \end{column}
 \end{columns}
 \end{frame}
 
-\begin{frame}{Resultado: 15 características seleccionadas}
-\begin{block}{Reducción del 50\% (30 → 15)}
+\begin{frame}{15 características seleccionadas}
 \begin{center}
+\small
 \begin{tabular}{clcl}
-\hline
+\toprule
 \# & Característica & \# & Característica \\
-\hline
+\midrule
 1 & area error & 9 & radius error \\
 2 & mean area & 10 & worst area \\
 3 & mean compactness & 11 & worst compactness \\
@@ -291,13 +318,12 @@ z = \frac{x - \mu}{\sigma}
 6 & mean perimeter & 14 & worst perimeter \\
 7 & mean radius & 15 & worst radius \\
 8 & perimeter error & & \\
-\hline
+\bottomrule
 \end{tabular}
 \end{center}
-\end{block}
 
 \vspace{0.5em}
-\textbf{Descartadas}: texture, smoothness, symmetry, fractal dimension (menor poder discriminativo).
+\textbf{Descartadas:} texture, smoothness, symmetry, fractal dimension (menor poder discriminativo, confirmado por el EDA).
 \end{frame}
 
 % ------------------------------------------------------------------------------
@@ -305,30 +331,34 @@ z = \frac{x - \mu}{\sigma}
 % ------------------------------------------------------------------------------
 
 \begin{frame}{Recall de la clase Maligno}
+\begin{columns}
+\begin{column}{0.5\textwidth}
 \begin{block}{Definición}
 \begin{equation*}
 \text{Recall Maligno} = \frac{TP}{TP + FN}
 \end{equation*}
-\textbf{Sensibilidad}: fracción de tumores malignos detectados correctamente.
+\textbf{Sensibilidad:} ¿qué fracción de tumores malignos detectamos?
 \end{block}
+\end{column}
 
-\vspace{1em}
-\begin{block}{Justificación clínica}
+\begin{column}{0.5\textwidth}
+\begin{alertblock}{¿Por qué esta métrica?}
 \begin{itemize}
-  \item \textbf{Falso negativo} (FN): tumor maligno como benigno → no tratar a un paciente que lo necesita
-  \item \textbf{Falso positivo} (FP): tumor benigno como maligno → exámenes adicionales innecesarios
-  \item El riesgo clínico de un FN es \textbf{sustancialmente mayor}
-  \item Todas las decisiones de hiperparámetros se optimizaron sobre Recall Maligno
+  \item \textbf{FN}: tumor maligno como benigno $\rightarrow$ \textbf{no tratar}
+  \item \textbf{FP}: tumor benigno como maligno $\rightarrow$ exámenes adicionales
+  \item El riesgo del FN es \textbf{sustancialmente mayor}
+  \item Todas las decisiones de hiperparámetros se optimizaron sobre este Recall
 \end{itemize}
-\end{block}
+\end{alertblock}
+\end{column}
+\end{columns}
 \end{frame}
 
 % ------------------------------------------------------------------------------
 \section{Modelos Implementados}
 % ------------------------------------------------------------------------------
 
-\begin{frame}{Modelos evaluados}
-\begin{block}{Nueve clasificadores}
+\begin{frame}{Los 9 clasificadores evaluados}
 \begin{columns}
 \begin{column}{0.5\textwidth}
 \begin{itemize}
@@ -349,228 +379,179 @@ z = \frac{x - \mu}{\sigma}
 \end{itemize}
 \end{column}
 \end{columns}
-\end{block}
 
 \vspace{1em}
-Todos entrenados con las 15 características seleccionadas y evaluados sobre el mismo conjunto de prueba (143 instancias).
-\end{frame}
-
-\begin{frame}{SVM — Máquinas de Soporte Vectorial}
-\begin{columns}
-\begin{column}{0.5\textwidth}
-\begin{block}{Resultados}
+\begin{block}{Condiciones experimentales idénticas}
 \begin{itemize}
-  \item Exactitud: 96.5\%
-  \item Precisión Maligno: 1.000
-  \item Recall Maligno: 0.906
-  \item Falsos negativos: 5
+  \item Mismas 15 características seleccionadas
+  \item Mismo conjunto de prueba (143 instancias)
+  \item Implementación en scikit-learn y Keras/TensorFlow
 \end{itemize}
 \end{block}
-
-\vspace{1em}
-Busca el hiperplano de margen máximo que separa las dos clases en el espacio de características normalizadas.
-\end{column}
-
-\begin{column}{0.5\textwidth}
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{../documento/images/fig_confusion_svm.png}
-\end{figure}
-\end{column}
-\end{columns}
 \end{frame}
 
-\begin{frame}{Regresión Logística — Mejor modelo}
+\begin{frame}{Regresión Logística -- \textbf{Mejor modelo}}
 \begin{columns}
 \begin{column}{0.5\textwidth}
-\begin{block}{Resultados}
+\begin{exampleblock}{Resultados}
 \begin{itemize}
-  \item \textbf{Exactitud}: 97.90\% \hfill \textbf{✦ Mejor}
-  \item \textbf{Precisión Maligno}: 1.000 \hfill \textbf{✦ Mejor}
-  \item \textbf{Recall Maligno}: 0.9434 \hfill \textbf{✦ Mejor}
-  \item Falsos negativos: 3
-  \item Falsos positivos: 0
+  \item \textbf{Exactitud}: 97.90\%
+  \item \textbf{Precisión Maligno}: 1.000 (cero falsos positivos)
+  \item \textbf{Recall Maligno}: 0.9434 -- \textbf{mejor del experimento}
+  \item Falsos negativos: solo 3 de 53
 \end{itemize}
-\end{block}
-
-\vspace{1em}
-CV Recall = $0.899 \pm 0.012$ (estable).
-\end{column}
-
-\begin{column}{0.5\textwidth}
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{../documento/images/regresion_logistica.png}
-\end{figure}
-\end{column}
-\end{columns}
-\end{frame}
-
-\begin{frame}{Árbol de Decisión}
-\begin{columns}
-\begin{column}{0.5\textwidth}
-\begin{block}{Resultados}
-\begin{itemize}
-  \item Exactitud: 92.3\%
-  \item Recall Maligno: 0.830 \hfill \textbf{Más bajo}
-  \item Basado en entropía de Shannon
-  \item Genera reglas SI–ENTONCES auditables
-\end{itemize}
-\end{block}
-
-\vspace{1em}
-\textbf{Ventaja}: máxima interpretabilidad clínica.
-\end{column}
-
-\begin{column}{0.5\textwidth}
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{../documento/images/fig_decision_tree.png}
-\end{figure}
-\end{column}
-\end{columns}
-\end{frame}
-
-\begin{frame}{Random Forest}
-\begin{columns}
-\begin{column}{0.5\textwidth}
-\begin{block}{Resultados}
-\begin{itemize}
-  \item Exactitud: 96.5\%
-  \item Precisión Maligno: 1.000
-  \item Recall Maligno: 0.906
-  \item CV Recall: $0.918 \pm 0.015$
-\end{itemize}
-\end{block}
+\end{exampleblock}
 
 \vspace{0.5em}
-\textbf{Mayor estabilidad} en validación cruzada (menor varianza).
-\end{column}
-
-\begin{column}{0.5\textwidth}
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{../documento/images/fig_confusion_rf.png}
-\end{figure}
-\end{column}
-\end{columns}
-
-\vspace{-0.5em}
-\begin{figure}
-\centering
-\includegraphics[width=0.6\textwidth]{../documento/images/fig_rf_importances.png}
-\end{figure}
-\end{frame}
-
-\begin{frame}{KNN — K-Nearest Neighbors}
-\begin{columns}
-\begin{column}{0.5\textwidth}
-\begin{block}{Selección de $k$}
-\begin{itemize}
-  \item $k=1$ maximiza Recall Maligno
-  \item Mayor variabilidad con $k=1$ (sensible al ruido)
-  \item A partir de $k=5$ se estabiliza
-\end{itemize}
-\end{block}
-
-\vspace{1em}
-\begin{block}{Resultados}
-\begin{itemize}
-  \item Exactitud: 90.9\%
-  \item Recall Maligno: 0.849
-  \item FP: 5 (mayor cantidad del experimento)
-\end{itemize}
-\end{block}
-\end{column}
-
-\begin{column}{0.5\textwidth}
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{../documento/images/fig_knn.png}
-\end{figure}
+CV Recall = $0.899 \pm 0.012$ (estable)
 
 \vspace{0.5em}
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{../documento/images/fig_knn_matriz.png}
-\end{figure}
-\end{column}
-\end{columns}
-\end{frame}
-
-\begin{frame}{Naive Bayes Gaussiano}
-\begin{columns}
-\begin{column}{0.5\textwidth}
-\begin{block}{Resultados}
-\begin{itemize}
-  \item Exactitud: 93.7\%
-  \item Precisión Maligno: 0.978
-  \item Recall Maligno: 0.849
-  \item CV Recall: $0.880 \pm 0.013$ \hfill \textbf{Más estable}
-\end{itemize}
-\end{block}
-
-\vspace{1em}
-\textbf{Conservador}: minimiza falsas alarmas, favorece especificidad sobre sensibilidad.
+\textbf{Coeficientes interpretables} que permiten auditar cada decisión clínica.
 \end{column}
 
 \begin{column}{0.5\textwidth}
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{../documento/images/fig_bayes_matriz.png}
+\includegraphics[width=0.85\textwidth]{../documento/images/regresion_logistica.png}
+\caption{\tiny Matriz de confusión -- RL}
 \end{figure}
 \end{column}
 \end{columns}
 \end{frame}
 
-\begin{frame}{XGBoost}
+\begin{frame}{XGBoost -- Segundo mejor}
 \begin{columns}
 \begin{column}{0.5\textwidth}
 \begin{block}{Resultados}
 \begin{itemize}
   \item Exactitud: 96.5\%
   \item Precisión Maligno: 0.980
-  \item Recall Maligno: 0.925 \hfill \textbf{2° mejor}
+  \item \textbf{Recall Maligno}: 0.925 -- \textbf{2° mejor}
   \item Falsos negativos: 4
-  \item CV Recall: $0.893 \pm 0.046$ (mayor varianza)
 \end{itemize}
 \end{block}
 
-\vspace{1em}
-Gradient Boosting: cada árbol corrige los errores del anterior.
+\vspace{0.5em}
+CV Recall = $0.893 \pm 0.046$ (mayor varianza)
 \end{column}
 
 \begin{column}{0.5\textwidth}
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{../documento/images/fig_confusion_xgb.png}
+\includegraphics[width=0.8\textwidth]{../documento/images/fig_confusion_xgb.png}
+\caption{\tiny Matriz de confusión -- XGBoost}
 \end{figure}
 \end{column}
 \end{columns}
 \end{frame}
 
-\begin{frame}{AdaBoost}
+\begin{frame}{SVM, Random Forest y ANN -- Tercer bloque}
 \begin{columns}
 \begin{column}{0.5\textwidth}
-\begin{block}{Resultados}
+\begin{block}{Métricas idénticas}
 \begin{itemize}
-  \item Exactitud: 94.4\%
-  \item Precisión Maligno: 0.979
-  \item Recall Maligno: 0.868
-  \item Falsos negativos: 7
-  \item CV Recall: $0.893 \pm 0.031$
+  \item Exactitud: 96.5\%
+  \item Precisión Maligno: 1.000
+  \item Recall Maligno: 0.906
+  \item Cero falsos positivos
 \end{itemize}
 \end{block}
 
-\vspace{1em}
-Algoritmo adaptativo que combina clasificadores débiles asignando mayor peso a errores.
+\vspace{0.5em}
+\textbf{Diferencia clave: estabilidad}
+\begin{itemize}
+  \item Random Forest: CV $0.918 \pm 0.015$ -- \textbf{más estable}
+  \item SVM: CV $0.893 \pm 0.046$ -- mayor varianza
+\end{itemize}
 \end{column}
 
 \begin{column}{0.5\textwidth}
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{../documento/images/fig_confusion_ada.png}
+\includegraphics[width=0.8\textwidth]{../documento/images/fig_confusion_rf.png}
+\caption{\tiny Matriz -- Random Forest}
 \end{figure}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Random Forest -- Importancia de características}
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\begin{block}{Cuatro atributos dominantes}
+\begin{itemize}
+  \item \texttt{worst perimeter}
+  \item \texttt{worst area}
+  \item \texttt{worst concave points}
+  \item \texttt{worst radius}
+\end{itemize}
+\end{block}
+
+\vspace{0.5em}
+\textbf{Concentran el 56.2\%} del poder predictivo total.
+
+\vspace{0.5em}
+La morfología más extrema de las células es el factor más discriminativo.
+\end{column}
+
+\begin{column}{0.5\textwidth}
+\begin{figure}
+\centering
+\includegraphics[width=0.65\textwidth]{../documento/images/fig_rf_importances.png}
+\caption{\tiny Importancia Gini -- Random Forest}
+\end{figure}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{KNN y Naive Bayes}
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\begin{block}{KNN ($k$=1)}
+\begin{itemize}
+  \item Exactitud: 90.9\%
+  \item Recall Maligno: 0.849
+  \item FP: 5 (mayor cantidad del experimento)
+  \item Muy sensible al ruido con $k=1$
+\end{itemize}
+\end{block}
+\end{column}
+
+\begin{column}{0.5\textwidth}
+\begin{block}{Naive Bayes Gaussiano}
+\begin{itemize}
+  \item Exactitud: 93.7\%
+  \item Recall Maligno: 0.849
+  \item CV Recall: $0.880 \pm 0.013$ -- \textbf{más estable}
+  \item Conservador: favorece especificidad sobre sensibilidad
+\end{itemize}
+\end{block}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{AdaBoost y Árbol de Decisión}
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\begin{block}{AdaBoost}
+\begin{itemize}
+  \item Exactitud: 94.4\%
+  \item Recall Maligno: 0.868
+  \item 7 falsos negativos
+  \item CV Recall: $0.893 \pm 0.031$
+\end{itemize}
+\end{block}
+\end{column}
+
+\begin{column}{0.5\textwidth}
+\begin{alertblock}{Árbol de Decisión}
+\begin{itemize}
+  \item Exactitud: 92.3\%
+  \item Recall Maligno: \textbf{0.830 -- más bajo}
+  \item \textbf{Ventaja:} máxima interpretabilidad
+  \item Reglas SI--ENTONCES auditables por médicos
+\end{itemize}
+\end{alertblock}
 \end{column}
 \end{columns}
 \end{frame}
@@ -582,8 +563,7 @@ Algoritmo adaptativo que combina clasificadores débiles asignando mayor peso a 
 \begin{itemize}
   \item 3 capas densas (16-16-1)
   \item 545 parámetros entrenables
-  \item Dropout 20\% por capa oculta
-  \item Early Stopping (paciencia 10 épocas)
+  \item Dropout 20\% + Early Stopping
 \end{itemize}
 \end{block}
 
@@ -595,12 +575,16 @@ Algoritmo adaptativo que combina clasificadores débiles asignando mayor peso a 
   \item Recall Maligno: 0.906
 \end{itemize}
 \end{block}
+
+\vspace{0.5em}
+\textbf{Sorpresa:} no supera a modelos lineales. El problema es linealmente separable.
 \end{column}
 
-\begin{column}{0.5\textwidth}
+\begin{column}{0.35\textwidth}
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{../documento/images/fig_ann_training.png}
+\includegraphics[width=0.8\textwidth]{../documento/images/fig_ann_training.png}
+\caption{\tiny Curvas de entrenamiento ANN}
 \end{figure}
 \end{column}
 \end{columns}
@@ -610,12 +594,12 @@ Algoritmo adaptativo que combina clasificadores débiles asignando mayor peso a 
 \section{Resultados Comparativos}
 % ------------------------------------------------------------------------------
 
-\begin{frame}{Comparación de métricas}
+\begin{frame}{Ranking por Recall Maligno}
 \begin{columns}
-\begin{column}{0.5\textwidth}
-\begin{block}{Ranking por Recall Maligno}
+\begin{column}{0.45\textwidth}
+\begin{block}{Posiciones}
 \begin{enumerate}
-  \item \textbf{Regresión Logística: 0.9434}
+  \item \textbf{Reg. Logística: 0.9434}
   \item XGBoost: 0.9245
   \item SVM, ANN, RF: 0.9057
   \item AdaBoost: 0.8679
@@ -625,10 +609,11 @@ Algoritmo adaptativo que combina clasificadores débiles asignando mayor peso a 
 \end{block}
 \end{column}
 
-\begin{column}{0.5\textwidth}
+\begin{column}{0.55\textwidth}
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{../documento/images/fig_metrics_comparison.png}
+\includegraphics[width=0.85\textwidth]{../documento/images/fig_metrics_comparison.png}
+\caption{\tiny Comparación visual de métricas}
 \end{figure}
 \end{column}
 \end{columns}
@@ -637,15 +622,18 @@ Algoritmo adaptativo que combina clasificadores débiles asignando mayor peso a 
 \begin{frame}{Curvas ROC}
 \begin{figure}
 \centering
-\includegraphics[width=0.75\textwidth]{../documento/images/fig_roc_curves.png}
+\includegraphics[width=0.35\textwidth]{../documento/images/fig_roc_curves.png}
+\caption{Curvas ROC para 7 modelos evaluados}
 \end{figure}
 
-\vspace{0.5em}
-El AUC indica la probabilidad de asignar un score más alto a una instancia maligna aleatoria que a una benigna.
+\vspace{0.3em}
+\begin{center}
+\small
+AUC = probabilidad de que el modelo asigne mayor score a un maligno que a un benigno.
+\end{center}
 \end{frame}
 
-\begin{frame}{Resumen de resultados}
-\begin{block}{Tabla comparativa}
+\begin{frame}{Tabla comparativa completa}
 \begin{center}
 \scriptsize
 \begin{tabular}{lcccc}
@@ -664,7 +652,11 @@ KNN & \cellcolor{rojomenor}0.909 & \cellcolor{rojomenor}0.900 & 0.849 & \cellcol
 \bottomrule
 \end{tabular}
 \end{center}
-\end{block}
+
+\vspace{0.5em}
+\begin{center}
+\small Verde = mejor valor \hspace{1em} Rosa = peor valor por columna
+\end{center}
 \end{frame}
 
 % ------------------------------------------------------------------------------
@@ -672,7 +664,6 @@ KNN & \cellcolor{rojomenor}0.909 & \cellcolor{rojomenor}0.900 & 0.849 & \cellcol
 % ------------------------------------------------------------------------------
 
 \begin{frame}{Validación cruzada 5-fold}
-\begin{block}{Recall Maligno: prueba vs. CV}
 \begin{center}
 \scriptsize
 \begin{tabular}{lccc}
@@ -690,16 +681,26 @@ KNN & 0.849 & 0.899 & 0.025 \\
 \bottomrule
 \end{tabular}
 \end{center}
-\end{block}
+
+\vspace{0.5em}
+\begin{alertblock}{Insight clave}
+SVM y Random Forest tienen \textbf{mismas métricas puntuales}, pero RF es 3 veces más estable en CV. La evaluación sobre un solo split habría ocultado esta diferencia.
+\end{alertblock}
 \end{frame}
 
-\begin{frame}{Patrones de estabilidad}
-\begin{block}{Tres patrones identificados}
-\begin{enumerate}
-  \item \textbf{Alta sensibilidad, alta estabilidad}: Regresión Logística — mejor Recall (0.943) con desviación moderada ($\pm$0.025).
-  \item \textbf{Alta sensibilidad, alta varianza}: XGBoost — segundo mejor Recall pero mayor desviación ($\pm$0.046).
-  \item \textbf{Menor sensibilidad, mayor estabilidad}: Naive Bayes ($\pm$0.013), Random Forest ($\pm$0.015).
-\end{enumerate}
+\begin{frame}{Tres patrones de estabilidad}
+\begin{block}{1. Alta sensibilidad, alta estabilidad}
+\textbf{Regresión Logística} -- mejor Recall (0.943) con desviación moderada ($\pm$0.025). El problema es linealmente separable.
+\end{block}
+
+\vspace{0.5em}
+\begin{block}{2. Alta sensibilidad, alta varianza}
+\textbf{XGBoost} -- segundo mejor Recall (0.925) pero mayor desviación ($\pm$0.046). Riesgo en datasets pequeños.
+\end{block}
+
+\vspace{0.5em}
+\begin{block}{3. Menor sensibilidad, mayor estabilidad}
+\textbf{Naive Bayes} ($\pm$0.013) y \textbf{Random Forest} ($\pm$0.015). Predicciones altamente consistentes entre particiones.
 \end{block}
 \end{frame}
 
@@ -708,70 +709,95 @@ KNN & 0.849 & 0.899 & 0.025 \\
 % ------------------------------------------------------------------------------
 
 \begin{frame}{Conclusiones principales}
-\begin{block}{Fases del flujo}
-\begin{itemize}
-  \item \textbf{EDA}: identificó redundancia entre versiones mean/error/worst.
-  \item \textbf{Normalización z-score}: indispensable para SVM y KNN.
-  \item \textbf{Selección de atributos}: reducción 50\% (30→15) sin pérdida de rendimiento.
-  \item \textbf{Recall Maligno}: métrica correcta para el contexto clínico.
-\end{itemize}
-\end{block}
-
-\vspace{1em}
-\begin{block}{Sobre los modelos}
-\begin{itemize}
-  \item \textbf{Regresión Logística} fue el mejor modelo: mayor Recall (0.943) y precisión perfecta.
-  \item El problema es linealmente separable con las 15 características seleccionadas.
-  \item Modelos complejos (ANN, RF) no superaron a modelos lineales.
-\end{itemize}
-\end{block}
-\end{frame}
-
-\begin{frame}{Recomendaciones de uso}
-\begin{block}{Contexto de aplicación}
 \begin{columns}
 \begin{column}{0.5\textwidth}
-\begin{block}{Screening masivo}
-Regresión Logística — mayor Recall, coeficientes interpretables.
+\begin{block}{Sobre el flujo}
+\begin{itemize}
+  \item \textbf{EDA}: identificó redundancia entre versiones mean/error/worst
+  \item \textbf{Normalización z-score}: indispensable para SVM y KNN
+  \item \textbf{Selección}: reducción 50\% (30$\rightarrow$15) sin pérdida de rendimiento
+  \item \textbf{Recall Maligno}: la métrica correcta para el contexto clínico
+\end{itemize}
 \end{block}
+\end{column}
 
+\begin{column}{0.5\textwidth}
+\begin{exampleblock}{Sobre los modelos}
+\begin{itemize}
+  \item \textbf{Regresión Logística}: mejor modelo global (Recall 0.943, precisión perfecta)
+  \item El problema es \textbf{linealmente separable} con las 15 características
+  \item Modelos complejos (ANN, RF) \textbf{no superaron} a modelos lineales
+  \item La \textbf{validación cruzada} distingue modelos con igual rendimiento puntual
+\end{itemize}
+\end{exampleblock}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Recomendaciones según el contexto}
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\begin{exampleblock}{Screening masivo}
+\textbf{Regresión Logística} -- mayor Recall, coeficientes interpretables, cero falsos positivos.
+\end{exampleblock}
+
+\vspace{0.5em}
 \begin{block}{Segunda opinión clínica}
-Random Forest — mejor estabilidad en CV ($\pm$0.015).
+\textbf{Random Forest} -- mejor estabilidad en CV ($\pm$0.015) con rendimiento competitivo.
 \end{block}
 \end{column}
 
 \begin{column}{0.5\textwidth}
 \begin{block}{Comunicación de riesgo}
-Naive Bayes — probabilidades explícitas, mayor consistencia.
+\textbf{Naive Bayes} -- probabilidades posteriores explícitas $P(\text{Maligno}|\mathbf{x})$, mayor consistencia.
 \end{block}
 
-\begin{block}{Validación médica}
-Árbol de Decisión — reglas SI–ENTONCES auditables.
-\end{block}
+\vspace{0.5em}
+\begin{alertblock}{Validación médica}
+\textbf{Árbol de Decisión} -- reglas SI--ENTONCES auditables, a costa del menor Recall.
+\end{alertblock}
 \end{column}
 \end{columns}
-\end{block}
-\end{frame}
-
-\begin{frame}{Limitaciones}
-\begin{itemize}
-  \item Dataset de un único centro médico (Universidad de Wisconsin) — limita generalización.
-  \item Tamaño reducido (569 instancias) — insuficiente para deep learning.
-  \item No incorpora factores de riesgo clínicos (edad, historial familiar, marcadores genéticos).
-  \item Validación interna (train/test) — se requiere validación externa.
-  \item ANN no incluida en validación cruzada.
-\end{itemize}
 \end{frame}
 
 \begin{frame}{Aprendizajes clave}
-\begin{block}{}
 \begin{enumerate}
-  \item La exactitud es \textbf{insuficiente} en problemas con desbalance de clases.
-  \item KNN obtuvo 90.9\% de accuracy pero solo 84.91\% de Recall Maligno.
-  \item La analítica de datos es un proceso integrado: preprocesamiento es tan determinante como el algoritmo.
-  \item La validación cruzada permite distinguir modelos con igual rendimiento puntual pero diferente estabilidad.
+  \item La \textbf{exactitud es insuficiente} en problemas médicos con desbalance de clases.
+  
+  \item KNN: 90.9\% accuracy pero solo 84.91\% Recall Maligno -- \textbf{8 tumores malignos sin detectar}.
+  
+  \item La analítica de datos es un \textbf{proceso integrado}: preprocesamiento es tan determinante como el algoritmo.
+  
+  \item La \textbf{validación cruzada} permite distinguir modelos con igual rendimiento puntual pero diferente estabilidad.
+  
+  \item Que un modelo lineal supere a una red neuronal de 545 parámetros confirma que \textbf{la complejidad no garantiza mejor rendimiento}.
 \end{enumerate}
-\end{block}
+\end{frame}
+
+\begin{frame}{Limitaciones y trabajo futuro}
+\begin{itemize}
+  \item Dataset de un único centro médico -- limita generalización a otras poblaciones.
+  \item Tamaño reducido (569 instancias) -- insuficiente para arquitecturas de deep learning más complejas.
+  \item No incorpora factores de riesgo clínicos (edad, historial familiar, marcadores genéticos).
+  \item Validación interna (train/test) -- se requiere validación externa sobre dataset independiente.
+  \item ANN no incluida en validación cruzada por costo computacional.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Resumen ejecutivo}
+\begin{center}
+\Large
+\textbf{Regresión Logística} obtuvo el mejor Recall Maligno (94.34\%)\\
+con precisión perfecta (1.000) y cero falsos positivos.
+\end{center}
+
+\vspace{1em}
+\begin{center}
+\large
+El flujo integrado de analítica de datos demuestra que\\
+\textbf{preprocesamiento + métricas correctas + validación robusta}\\
+son tan importantes como el algoritmo de clasificación.
+\end{center}
 \end{frame}
 
 \backmatter
