@@ -57,7 +57,7 @@ This paper presents the design and implementation of a complete data analytics p
 % ─── 1. INTRODUCCIÓN ─────────────────────────────────────────
 \section{Introducción}
 
-\IEEEPARstart{E}{l} cáncer de mama es el cáncer más frecuente a nivel mundial y la principal causa de muerte oncológica en mujeres; las tasas de supervivencia a cinco años superan el 90\% cuando el diagnóstico se realiza en estadios tempranos \cite{who2023}. Los algoritmos de Machine Learning han demostrado capacidad para clasificar muestras celulares como benignas o malignas a partir de características morfológicas extraídas de imágenes digitalizadas, con resultados comparables o superiores a los de especialistas \cite{kourou2015, asri2016}. Adicionalmente, la clasificación bayesiana permite cuantificar las probabilidades de diagnóstico correcto e incorrecto, ofreciendo un marco interpretable para la decisión clínica \cite{bayesian_med}.
+\IEEEPARstart{E}{l} cáncer de mama es el cáncer más frecuente a nivel mundial y la principal causa de muerte oncológica en mujeres; las tasas de supervivencia a cinco años superan el 90\% cuando el diagnóstico se realiza en estadios tempranos \cite{who2023}. Los algoritmos de Machine Learning han demostrado capacidad para clasificar muestras celulares como benignas o malignas a partir de características morfológicas extraídas de imágenes digitalizadas, con resultados comparables o superiores a los de especialistas \cite{kourou2015, asri2016}. Entre estos algoritmos, los de naturaleza probabilística —como la clasificación bayesiana— aportan además una salida interpretable, al cuantificar las probabilidades de diagnóstico correcto e incorrecto que apoyan la decisión clínica \cite{bayesian_med}.
 
 No obstante, la efectividad de estos modelos depende críticamente del pipeline de preprocesamiento: la selección de atributos, la normalización y la elección de métricas adecuadas son tan determinantes como el algoritmo de clasificación \cite{remeseiro2019, garcia2015}. Este trabajo implementa un pipeline completo de analítica de datos — desde el análisis exploratorio hasta la evaluación por validación cruzada — comparando nueve clasificadores bajo métricas adecuadas para el contexto oncológico, siguiendo las fases definidas en \cite{curso_ud}.
 
@@ -242,8 +242,8 @@ Se implementaron y compararon nueve clasificadores. Todos entrenados con el mism
 \subsection{Máquinas de Soporte Vectorial (SVM)}
 Busca el hiperplano de margen máximo que separa las dos clases en el
 espacio de características normalizadas \cite{svm_vapnik}. Configuración: \texttt{kernel='linear'}, \texttt{C=1.0}, \texttt{random\_state=42}.
-Alcanzó 96.5\% de exactitud y precisión perfecta en Maligno
-(1.000), con un Recall de 0.906 (Fig.~\ref{fig:svm_cm}).
+Alcanzó 96.50\% de exactitud y precisión perfecta en Maligno
+(1.000), con un Recall de 0.9057 (Fig.~\ref{fig:svm_cm}).
 
 \begin{figure}[!t]
   \centering
@@ -262,7 +262,7 @@ Configuración: \texttt{max\_iter=1000}, \texttt{random\_state=42}.
 Mejor modelo del experimento: 97.90\% de exactitud, Recall Maligno
 de 0.9434 y precisión perfecta (1.000 — cero falsos positivos).
 Solo 3 de los 53 tumores malignos fueron mal clasificados
-(Fig.~\ref{fig:rl_cm}). Su CV Recall $= 0.931 \pm 0.025$ confirma
+(Fig.~\ref{fig:rl_cm}). Su CV Recall $= 0.9308 \pm 0.0247$ confirma
 que el rendimiento es estable y no depende de la partición.
 Los coeficientes $\boldsymbol{\beta}$ permiten auditar qué
 características impulsan cada decisión clínica.
@@ -280,7 +280,7 @@ Usa el criterio de \textbf{entropía} para seleccionar el atributo de partición
 \begin{equation}
   \text{IG} = H(\text{padre}) - \sum_b \frac{n_b}{n_t} H(b), \quad H(S) = -\sum_c \frac{n_c}{|S|} \log_2 \frac{n_c}{|S|}
 \end{equation}
-donde $n_b$ es el número de instancias en la rama $b$ de la partición, $n_t$ el total, $n_c$ las instancias de la clase $c$ en el subconjunto $S$, y $H$ la entropía de Shannon en bits. Alcanza 92.3\% de exactitud y Recall Maligno de 0.830 — el más bajo del experimento, coherente con la mayor varianza de los modelos de árbol único. Su ventaja es la interpretabilidad: genera reglas SI–ENTONCES verificables por médicos (Fig.~\ref{fig:tree}).
+donde $n_b$ es el número de instancias en la rama $b$ de la partición, $n_t$ el total, $n_c$ las instancias de la clase $c$ en el subconjunto $S$, y $H$ la entropía de Shannon en bits. Alcanza 92.31\% de exactitud y Recall Maligno de 0.8302 — el más bajo del experimento, coherente con la mayor varianza de los modelos de árbol único. Su ventaja es la interpretabilidad: genera reglas SI–ENTONCES verificables por médicos (Fig.~\ref{fig:tree}).
 
 \begin{figure}[!t]
   \centering
@@ -294,9 +294,9 @@ Ensemble de 100 árboles entrenados con muestras bootstrap \cite{breiman2001},
 combinando predicciones por votación mayoritaria. Configuración:
 \texttt{n\_estimators=100}, \texttt{criterion='entropy'}, \texttt{max\_depth=None},
 \texttt{random\_state=42}. Comparte exactitud
-y Recall de Maligno con SVM (96.5\% y 0.906), pero su validación
-cruzada 5-fold es más estable: CV Recall $= 0.918 \pm 0.015$
-frente a $0.893 \pm 0.046$ del SVM, lo que indica menor varianza
+y Recall de Maligno con SVM (96.50\% y 0.9057), pero su validación
+cruzada 5-fold es más estable: CV Recall $= 0.9183 \pm 0.0148$
+frente a $0.8933 \pm 0.0464$ del SVM, lo que indica menor varianza
 y mejor generalización (Fig.~\ref{fig:rf_cm}).
 
 \begin{figure}[!t]
@@ -304,7 +304,7 @@ y mejor generalización (Fig.~\ref{fig:rf_cm}).
   \includegraphics[width=0.82\columnwidth]{images/fig_confusion_rf.png}
   \caption{Matriz de confusión — Random Forest. Mismas métricas
   puntuales que SVM, pero con mayor estabilidad en validación
-  cruzada (CV Recall $0.918 \pm 0.015$).}
+  cruzada (CV Recall $0.9183 \pm 0.0148$).}
   \label{fig:rf_cm}
 \end{figure}
 
@@ -333,7 +333,7 @@ más cercanos en el espacio de características normalizadas. El valor
 validación cruzada 5-fold sobre el conjunto de entrenamiento
 (Fig.~\ref{fig:knn}).
 
-El valor $k=1$ resultó óptimo con un Recall de $0.899$, aunque
+El valor $k=1$ resultó óptimo con un Recall de $0.8990$, aunque
 presenta la mayor variabilidad del conjunto: con un solo vecino,
 una instancia ruidosa puede cambiar la predicción completamente.
 Para $k \geq 2$ el Recall fluctúa entre $0.84$ y $0.89$ —con un
@@ -349,7 +349,7 @@ obtenido con $k=1$.
 
 La Fig.~\ref{fig:knn_cm} muestra 8~falsos negativos y
 5~falsos positivos — la mayor cantidad de FP del experimento —
-con exactitud de 90.9\% y Recall Maligno de 0.849, reflejo
+con exactitud de 90.91\% y Recall Maligno de 0.8491, reflejo
 de su sensibilidad al ruido con $k=1$.
 
 \begin{figure}[!t]
@@ -376,12 +376,12 @@ donde $d$ es el número de atributos. La clase asignada es la de mayor probabili
 \end{figure}
 
 La matriz de confusión (Fig.~\ref{fig:nb_cm}) muestra 8~falsos negativos y 1~falso
-positivo, con una exactitud de 93.7\%. A pesar de su modesta
-sensibilidad (Recall Maligno $= 0.849$), el Naive Bayes destaca
-por su precisión casi perfecta en la clase Maligno (0.978):
-cuando predice un tumor como maligno, acierta el 97.8\% de las
+positivo, con una exactitud de 93.71\%. A pesar de su modesta
+sensibilidad (Recall Maligno $= 0.8491$), el Naive Bayes destaca
+por su precisión casi perfecta en la clase Maligno (0.9783):
+cuando predice un tumor como maligno, acierta el 97.83\% de las
 veces. Su validación cruzada es estable: CV Recall
-$= 0.880 \pm 0.013$, la menor desviación estándar de todos
+$= 0.8804 \pm 0.0130$, la menor desviación estándar de todos
 los modelos evaluados. Esto lo posiciona como el clasificador
 más \textit{consistente} del conjunto, aunque no el más
 sensible, conectando directamente con su fundamento bayesiano:
@@ -396,11 +396,11 @@ Configuración: \texttt{n\_estimators=100}, \texttt{learning\_rate=0.1},
 \texttt{max\_depth=4}, \texttt{eval\_metric='logloss'}, \texttt{random\_state=42}.
 
 La matriz de confusión (Fig.~\ref{fig:cm_xgb}) muestra solo
-4~falsos negativos y 1~falso positivo, alcanzando 96.5\% de
-exactitud y un Recall Maligno de $0.925$ — el segundo más alto
-del experimento, superado únicamente por la Regresión Logística. Con una precisión de 0.980 en Maligno, el modelo es
+4~falsos negativos y 1~falso positivo, alcanzando 96.50\% de
+exactitud y un Recall Maligno de $0.9245$ — el segundo más alto
+del experimento, superado únicamente por la Regresión Logística. Con una precisión de 0.9800 en Maligno, el modelo es
 altamente conservador en sus predicciones positivas. Sin embargo,
-su CV Recall $= 0.893 \pm 0.046$ revela la mayor variabilidad
+su CV Recall $= 0.8933 \pm 0.0464$ revela la mayor variabilidad
 entre los modelos de boosting, sugiriendo cierta sensibilidad
 a la partición de datos en la validación cruzada.
 
@@ -408,7 +408,7 @@ a la partición de datos en la validación cruzada.
   \centering
   \includegraphics[width=0.80\columnwidth]{images/fig_confusion_xgb.png}
   \caption{Matriz de confusión — XGBoost. Con solo 4~falsos
-  negativos alcanza el segundo mejor Recall Maligno (0.925).}
+  negativos alcanza el segundo mejor Recall Maligno (0.9245).}
   \label{fig:cm_xgb}
 \end{figure}
 
@@ -420,9 +420,9 @@ cada iteración. Configuración: \texttt{n\_estimators=100},
 
 Como muestra la Fig.~\ref{fig:cm_ada}, el modelo produce
 7~falsos negativos y 1~falso positivo, con una exactitud
-de 94.4\% y un Recall Maligno de $0.868$. Aunque su
-precisión en Maligno es alta (0.979), su sensibilidad
-es la más baja de los métodos de boosting. Su CV Recall $= 0.893 \pm 0.031$ coincide en media con
+de 94.41\% y un Recall Maligno de $0.8679$. Aunque su
+precisión en Maligno es alta (0.9787), su sensibilidad
+es la más baja de los métodos de boosting. Su CV Recall $= 0.8933 \pm 0.0313$ coincide en media con
 XGBoost pero con menor desviación, indicando mayor
 estabilidad a costa de menor rendimiento puntual.
 
@@ -430,7 +430,7 @@ estabilidad a costa de menor rendimiento puntual.
   \centering
   \includegraphics[width=0.80\columnwidth]{images/fig_confusion_ada.png}
   \caption{Matriz de confusión — AdaBoost. Los 7~falsos negativos
-  lo sitúan en sexto lugar del ranking por Recall Maligno (0.868).}
+  lo sitúan en sexto lugar del ranking por Recall Maligno (0.8679).}
   \label{fig:cm_ada}
 \end{figure}
 
@@ -464,9 +464,9 @@ Como se observa en la Fig.~\ref{fig:ann_train}, ambas curvas
 convergen alrededor de la época~10 y se mantienen paralelas
 hasta el final del entrenamiento, lo que confirma ausencia de
 sobreajuste. La validación estabiliza su exactitud en torno
-a 0.93--0.94, coherente con el 96.5\% obtenido sobre el
+a 0.93--0.94, coherente con el 96.50\% obtenido sobre el
 conjunto de prueba. El modelo alcanza un Recall Maligno de
-90.57\% y precisión perfecta en Maligno (1.000), empatando
+0.9057 y precisión perfecta en Maligno (1.000), empatando
 en todas las métricas con SVM y Random Forest. La pérdida de entrenamiento continúa
 descendiendo levemente por debajo de la de validación,
 comportamiento esperado con Dropout activo.
@@ -601,19 +601,19 @@ La Fig.~\ref{fig:metrics} muestra una visualización agrupada de las cuatro mét
 
 \subsection{Análisis de resultados por modelo}
 
-\textbf{Regresión Logística} obtuvo el mejor rendimiento global: 97.90\% de exactitud y 94.34\% de Recall Maligno. De los 53 tumores malignos, clasificó incorrectamente solo 3 (falsos negativos) y no produjo ningún falso positivo (precisión Maligno = 1.000), lo que significa cero pacientes sanos diagnosticados erróneamente como malignos. Su simplicidad matemática facilita además la interpretación clínica de los coeficientes. Este resultado es consistente con trabajos recientes que sitúan a la Regresión Logística entre los clasificadores de mejor desempeño sobre el WDBC, con exactitudes del orden del 97--98\% \cite{strelcenia2023, rajpoot2024}.
+\textbf{Regresión Logística} obtuvo el mejor rendimiento global: 97.90\% de exactitud y Recall Maligno de 0.9434. De los 53 tumores malignos, clasificó incorrectamente solo 3 (falsos negativos) y no produjo ningún falso positivo (precisión Maligno = 1.000), lo que significa cero pacientes sanos diagnosticados erróneamente como malignos. Su simplicidad matemática facilita además la interpretación clínica de los coeficientes. Este resultado es consistente con trabajos recientes que sitúan a la Regresión Logística entre los clasificadores de mejor desempeño sobre el WDBC, con exactitudes del orden del 97--98\% \cite{strelcenia2023, rajpoot2024}.
 
-\textbf{ANN} obtiene un Recall Maligno de 90.57\% y exactitud de 96.50\%, empatando en todas las métricas con SVM y Random Forest (misma matriz de confusión: 48 verdaderos positivos, cero falsos positivos). El uso de Dropout y Early Stopping previno el sobreajuste (Fig.~\ref{fig:ann_train}). Que una red con 545 parámetros no supere a los modelos lineales en este dataset tiene una explicación directa: con solo 426 instancias de entrenamiento, y un problema que los modelos lineales ya resuelven con alta precisión, la mayor capacidad de la red no aporta ventaja.
+\textbf{ANN} obtiene un Recall Maligno de 0.9057 y exactitud de 96.50\%, empatando en todas las métricas con SVM y Random Forest (misma matriz de confusión: 48 verdaderos positivos, cero falsos positivos). El uso de Dropout y Early Stopping previno el sobreajuste (Fig.~\ref{fig:ann_train}). Que una red con 545 parámetros no supere a los modelos lineales en este dataset tiene una explicación directa: con solo 426 instancias de entrenamiento, y un problema que los modelos lineales ya resuelven con alta precisión, la mayor capacidad de la red no aporta ventaja.
 
-\textbf{XGBoost} logra 92.45\% de Recall Maligno, el segundo mejor del experimento. Sin embargo, su estabilidad en validación cruzada es la más baja junto con SVM ($\pm$0.046), lo que indica sensibilidad a la partición de datos de entrenamiento.
+\textbf{XGBoost} logra un Recall Maligno de 0.9245, el segundo mejor del experimento. Sin embargo, su estabilidad en validación cruzada es la más baja junto con SVM ($\pm$0.0464), lo que indica sensibilidad a la partición de datos de entrenamiento.
 
-\textbf{SVM, Random Forest y ANN} comparten exactamente las mismas métricas (96.50\% accuracy, 90.57\% Recall Maligno, precisión Maligno = 1.000, cero falsos positivos). Que un kernel lineal, un ensemble de árboles y una red neuronal coincidan refuerza la separabilidad lineal del problema con las 15 características. Las diferencias aparecen en la estabilidad: Random Forest es el más robusto (CV std $\pm$0.015) y SVM el de mayor varianza ($\pm$0.046).
+\textbf{SVM, Random Forest y ANN} comparten exactamente las mismas métricas (96.50\% de exactitud, Recall Maligno de 0.9057, precisión Maligno = 1.000, cero falsos positivos). Que un kernel lineal, un ensemble de árboles y una red neuronal coincidan refuerza la separabilidad lineal del problema con las 15 características. Las diferencias aparecen en la estabilidad: Random Forest es el más robusto (CV std $\pm$0.0148) y SVM el de mayor varianza ($\pm$0.0464).
 
-\textbf{Árbol de Decisión} presenta el Recall Maligno más bajo (83.02\%), coherente con su mayor varianza al ser un modelo único sin ensemble. Sin embargo, sigue siendo el modelo más interpretable.
+\textbf{Árbol de Decisión} presenta el Recall Maligno más bajo (0.8302), coherente con su mayor varianza al ser un modelo único sin ensemble. Sin embargo, sigue siendo el modelo más interpretable.
 
-\textbf{AdaBoost} alcanza el sexto lugar con un Recall Maligno de 86.79\%, produciendo 7~falsos negativos y 1~falso positivo. Su precisión en Maligno (0.979) es alta: cuando predice un tumor como maligno, casi siempre acierta. Sin embargo, su sensibilidad es la más baja entre los métodos de boosting, por detrás de XGBoost.
+\textbf{AdaBoost} alcanza el sexto lugar con un Recall Maligno de 0.8679, produciendo 7~falsos negativos y 1~falso positivo. Su precisión en Maligno (0.9787) es alta: cuando predice un tumor como maligno, casi siempre acierta. Sin embargo, su sensibilidad es la más baja entre los métodos de boosting, por detrás de XGBoost.
 
-\textbf{Naive Bayes} comparte Recall Maligno con KNN (84.91\%) pero supera en exactitud (93.71\% vs 90.91\%) y produce solo 1~falso positivo. Aunque modesto en sensibilidad, es el clasificador más conservador del experimento: estima $P(\text{Maligno}|\mathbf{x})$ de forma cautelosa, minimizando las alarmas falsas a costa de perder algunos verdaderos malignos.
+\textbf{Naive Bayes} comparte Recall Maligno con KNN (0.8491) pero supera en exactitud (93.71\% vs 90.91\%) y produce solo 1~falso positivo. Aunque modesto en sensibilidad, es el clasificador más conservador del experimento: estima $P(\text{Maligno}|\mathbf{x})$ de forma cautelosa, minimizando las alarmas falsas a costa de perder algunos verdaderos malignos.
 
 \textbf{KNN con $k=1$} tiene la menor exactitud general (90.91\%), esperado dado que con un solo vecino el modelo es muy sensible al ruido. La selección de $k$ óptimo por validación cruzada no mejoró suficientemente su rendimiento.
 
@@ -693,23 +693,23 @@ Naive Bayes     & 0.8491 & 0.8804 & \cellcolor{verdemejor}0.0130 \\
 \end{table}
 
 \textbf{Alta sensibilidad, alta estabilidad.} La Regresión
-Logística lidera en solitario con Recall Maligno de 0.943
-— casi cuatro puntos por encima del tercer bloque (0.906, formado
-por SVM, ANN y RF) — y con una desviación moderada ($\pm$0.025).
+Logística lidera en solitario con Recall Maligno de 0.9434
+— casi cuatro puntos por encima del tercer bloque (0.9057, formado
+por SVM, ANN y RF) — y con una desviación moderada ($\pm$0.0247).
 Su ventaja sobre modelos más complejos confirma que el problema
 es de naturaleza linealmente separable: la función sigmoide
 captura la frontera de decisión con mayor eficiencia que una
 red neuronal de 545 parámetros entrenada sobre 426 muestras.
 
 \textbf{Alta sensibilidad, alta varianza.} XGBoost obtiene el
-segundo mejor Recall Maligno (0.925) pero comparte con SVM la
-mayor desviación estándar ($\pm$0.046). Esto indica que su
+segundo mejor Recall Maligno (0.9245) pero comparte con SVM la
+mayor desviación estándar ($\pm$0.0464). Esto indica que su
 rendimiento es sensible a qué datos ve durante el entrenamiento,
 un riesgo en datasets pequeños como el WDBC.
 
 \textbf{Menor sensibilidad, mayor estabilidad.} Naive Bayes
 presenta la desviación más baja de todos los modelos
-($\pm$0.013), seguido de Random Forest ($\pm$0.015). Ambos
+($\pm$0.0130), seguido de Random Forest ($\pm$0.0148). Ambos
 sacrifican algo de sensibilidad a cambio de predicciones
 altamente consistentes entre particiones. Random Forest en
 particular ofrece el mejor equilibrio entre rendimiento y
@@ -739,7 +739,7 @@ en la evaluación.
 \subsection{Sobre la métrica de evaluación}
 Bajo accuracy, KNN ($k$=1) parece razonablemente competitivo
 (90.9\%); bajo Recall Maligno, cae a los últimos puestos
-(0.849, empatado con Naive Bayes) con 8 falsos negativos — 8 pacientes con cáncer que
+(0.8491, empatado con Naive Bayes) con 8 falsos negativos — 8 pacientes con cáncer que
 recibirían un diagnóstico incorrecto. Esta diferencia ilustra
 por qué en problemas médicos con desbalance de clases la
 accuracy no es una métrica suficiente \cite{hossin2015, sokolova2009}.
@@ -747,14 +747,14 @@ accuracy no es una métrica suficiente \cite{hossin2015, sokolova2009}.
 De forma análoga, SVM y Random Forest comparten exactamente
 las mismas métricas puntuales, pero su análisis de estabilidad revela que Random Forest
 es tres veces más estable en validación cruzada
-($\pm$0.015 vs $\pm$0.046). Una evaluación basada únicamente
+($\pm$0.0148 vs $\pm$0.0464). Una evaluación basada únicamente
 en el conjunto de prueba habría concluido que ambos modelos
 son equivalentes, ocultando una diferencia operacionalmente
 relevante.
 
 KNN presenta además la mayor
-brecha entre el Recall en prueba (0.849) y el CV Recall (0.899)
-— una diferencia de 0.050 puntos, la más amplia del experimento.
+brecha entre el Recall en prueba (0.8491) y el CV Recall (0.8990)
+— una diferencia de 0.0499 puntos, la más amplia del experimento.
 Esto indica que el conjunto de prueba resultó especialmente
 desfavorable para KNN, lo que hace su rendimiento puntual
 menos representativo que el de los demás modelos. En un
@@ -763,8 +763,8 @@ es un riesgo adicional frente a modelos más estables.
 
 \subsection{Sobre la elección del modelo}
 Las diferencias de Recall entre modelos son pequeñas en valor
-absoluto: la distancia entre el primero (LR, 0.943) y el tercero
-(SVM/RF/ANN, 0.906) corresponde a 2 predicciones sobre 53 instancias
+absoluto: la distancia entre el primero (LR, 0.9434) y el tercero
+(SVM/RF/ANN, 0.9057) corresponde a 2 predicciones sobre 53 instancias
 malignas. Con el IC de Wilson al 95\% para LR de $[0.85,\,0.98]$,
 parte del ranking observado puede ser ruido muestral. Las
 siguientes hipótesis de uso deben entenderse como orientación
@@ -773,26 +773,26 @@ directrices de despliegue:
 
 \begin{itemize}
   \item \textbf{Screening masivo} (prioridad: sensibilidad):
-  Regresión Logística — mayor Recall Maligno (0.943) con
+  Regresión Logística — mayor Recall Maligno (0.9434) con
   precisión perfecta (1.000) y coeficientes auditables.
 
   \item \textbf{Robustez ante variaciones en los datos}:
-  Random Forest — mejor estabilidad en CV ($\pm$0.015) con
+  Random Forest — mejor estabilidad en CV ($\pm$0.0148) con
   rendimiento competitivo.
 
   \item \textbf{Cuantificación de incertidumbre}:
   Naive Bayes Gaussiano — probabilidades posteriores
   $P(\text{Maligno}|\mathbf{x})$ con la menor varianza
-  en CV ($\pm$0.013).
+  en CV ($\pm$0.0130).
 
   \item \textbf{Balance rendimiento/costo computacional}:
-  XGBoost — segundo mejor Recall Maligno (0.925); su CV std
-  elevado ($\pm$0.046) requiere atención ante variaciones en
+  XGBoost — segundo mejor Recall Maligno (0.9245); su CV std
+  elevado ($\pm$0.0464) requiere atención ante variaciones en
   los datos de entrenamiento.
 
   \item \textbf{Interpretabilidad para personal médico}:
   Árbol de Decisión — reglas SI–ENTONCES auditables, con el
-  menor Recall Maligno del conjunto (0.830).
+  menor Recall Maligno del conjunto (0.8302).
 \end{itemize}
 
 \subsection{Limitaciones}
@@ -826,7 +826,7 @@ directrices de despliegue:
   AUC). Dado el tamaño reducido del conjunto de prueba
   (53 instancias malignas), los intervalos de confianza
   de las métricas son amplios: el Recall Maligno de la
-  Regresión Logística (0.943) tiene un intervalo de
+  Regresión Logística (0.9434) tiene un intervalo de
   confianza de Wilson al 95\% de aproximadamente
   $[0.85,\,0.98]$. En consecuencia, algunas diferencias
   de ranking entre modelos cercanos podrían no ser
@@ -837,25 +837,16 @@ directrices de despliegue:
 % ─── 10. CONCLUSIONES ────────────────────────────────────────
 \section{Conclusiones}
 
-Se implementó un pipeline completo de analítica de datos para la detección de cáncer de mama. A continuación se presentan las conclusiones organizadas por cada fase del pipeline:
+Se implementó un pipeline completo de analítica de datos para la detección de cáncer de mama. A continuación se sintetizan las conclusiones por fase del pipeline.
 
-\subsection{Fase de Análisis Exploratorio (EDA)}
-El análisis exploratorio reveló bloques de alta correlación entre las versiones \textit{mean}, \textit{error} y \textit{worst} de los mismos atributos morfológicos, evidenciando redundancia significativa en el espacio original de 30 características. La visualización de distribuciones por clase permitió identificar visualmente los atributos con mayor poder discriminativo (\texttt{mean area}, \texttt{mean concavity}), orientando las decisiones posteriores de selección de atributos.
+\subsection{Preprocesamiento y selección de atributos}
+La \textbf{normalización z-score} fue indispensable para los algoritmos sensibles a la escala (SVM, KNN), y ajustar el escalador solo sobre el conjunto de entrenamiento evitó el \textit{data leakage} \cite{kantardzic, garcia2015}. Conservar los valores anómalos (13\% de las instancias) preservó la capacidad de detectar tumores atípicos, los casos clínicamente más críticos. La \textbf{selección por intersección de dos métodos} (correlación con la variable objetivo y separación de medias) redujo la dimensionalidad de 30 a 15 características (50\%) sin degradar el rendimiento \cite{remeseiro2019}; el criterio de correlación fue el determinante, y los atributos descartados (\textit{texture}, \textit{smoothness}, \textit{symmetry}, \textit{fractal dimension}) coincidieron con los de menor poder discriminativo identificados en el EDA.
 
-\subsection{Fase de Preprocesamiento}
-La \textbf{normalización z-score} fue indispensable para el correcto funcionamiento de SVM y KNN, algoritmos sensibles a la escala de los datos \cite{kantardzic, garcia2015}. La aplicación correcta del escalador (\texttt{fit} solo en train) evitó el \textit{data leakage}, un error metodológico que habría inflado artificialmente las métricas de evaluación. La decisión de conservar los valores anómalos (13\% de las instancias) fue validada por los resultados: eliminarlos habría reducido la capacidad del modelo para detectar tumores atípicos, que son precisamente los casos más críticos.
+\subsection{Modelado y evaluación}
+La \textbf{Regresión Logística} obtuvo el mayor Recall Maligno (0.9434) con precisión perfecta (cero falsos positivos), la mejor combinación para screening clínico. Que un modelo lineal supere a SVM, Random Forest y ANN —los tres igualados en 0.9057— confirma que el problema es linealmente separable con las 15 características seleccionadas. La elección del Recall Maligno como métrica principal fue decisiva: bajo accuracy, KNN parecía competitivo (90.91\%), pero su sensibilidad real (0.8491) dejaba 8 tumores malignos sin detectar, diferencia que el accuracy por sí solo ocultaba \cite{hossin2015, sokolova2009}. El \textbf{Naive Bayes Gaussiano}, de fundamento bayesiano \cite{bayesian_med}, complementa el análisis con probabilidades posteriores $P(\text{Maligno}|\mathbf{x})$ que cuantifican la incertidumbre del diagnóstico.
 
-\subsection{Fase de Selección de Atributos}
-La \textbf{selección por intersección de dos métodos} (correlación con la variable objetivo y prueba de separación de medias) redujo las características de 30 a 15 (50\% de reducción) manteniendo el rendimiento competitivo de los clasificadores \cite{remeseiro2019}. Las 15 características descartadas correspondieron a atributos con bajo poder discriminativo (\textit{texture}, \textit{smoothness}, \textit{symmetry}, \textit{fractal dimension}), confirmando lo observado en el EDA. La convergencia de ambos métodos sobre el mismo subconjunto respalda la relevancia de las características seleccionadas, aunque el criterio de correlación fue el determinante del resultado final.
-
-\subsection{Fase de Modelado}
-La \textbf{Regresión Logística} obtuvo el mayor Recall Maligno (94.34\%) con precisión perfecta (1.000, cero falsos positivos), la mejor combinación para screening clínico. Que un modelo lineal supere a SVM, Random Forest y ANN en sensibilidad (estos tres igualados en 90.57\%) indica que el problema es linealmente separable con las 15 características seleccionadas: la mayor capacidad de los métodos complejos no aporta ventaja en este caso. El \textbf{Naive Bayes Gaussiano}, basado en la Teoría Bayesiana \cite{bayesian_med}, entrega probabilidades posteriores explícitas $P(\text{Maligno} | \mathbf{x})$ que cuantifican la incertidumbre del diagnóstico.
-
-\subsection{Fase de Evaluación}
-La métrica de \textbf{accuracy es insuficiente} para problemas médicos con desbalance de clases \cite{hossin2015, sokolova2009}. KNN obtuvo 90.9\% de accuracy pero solo 84.91\% de Recall Maligno, dejando 8 tumores malignos sin detectar. El uso conjunto de Recall, Precisión, F1 y AUC-ROC permite una evaluación más completa y honesta del rendimiento del clasificador. La priorización del Recall Maligno como métrica principal fue determinante para identificar a la Regresión Logística como el mejor modelo, un resultado que el accuracy por sí solo habría ocultado.
-
-\subsection{Fase de Estabilidad y Generalización}
-La \textbf{validación cruzada 5-fold} \cite{hastie2009} permitió distinguir entre modelos con alto rendimiento puntual pero inestable (XGBoost, SVM con $\pm$0.046 de desviación) y modelos más robustos (Random Forest con $\pm$0.015, Naive Bayes con $\pm$0.013). La Regresión Logística combina el mejor rendimiento puntual con estabilidad moderada ($\pm$0.025), confirmando su idoneidad como modelo de referencia. La elección del modelo final no depende únicamente de las métricas puntuales, sino del contexto de uso: screening masivo, segunda opinión clínica o comunicación de riesgo al paciente requieren perfiles distintos de sensibilidad y estabilidad.
+\subsection{Estabilidad y generalización}
+La \textbf{validación cruzada 5-fold} \cite{hastie2009} distinguió modelos de alto rendimiento puntual pero inestable (XGBoost y SVM, $\pm$0.0464) de otros más robustos (Random Forest $\pm$0.0148, Naive Bayes $\pm$0.0130); la Regresión Logística combinó el mejor rendimiento con estabilidad moderada ($\pm$0.0247). La elección del modelo final no depende solo de las métricas puntuales, sino del contexto de uso —screening masivo, segunda opinión clínica o comunicación de riesgo—, que demanda perfiles distintos de sensibilidad y estabilidad.
 
 \subsection{Conclusión General}
 Los resultados muestran que la selección de métricas y el preprocesamiento son tan determinantes como el algoritmo: la Regresión Logística supera a modelos más complejos —SVM, Random Forest, ANN— no por mayor capacidad, sino porque el problema es linealmente separable con las 15 características seleccionadas, y el Recall Maligno como métrica principal expone diferencias que la exactitud oculta \cite{hossin2015, sokolova2009}. El siguiente paso para sustentar estas conclusiones con mayor certeza estadística es aplicar tests pareados (McNemar, DeLong) y validar sobre un dataset externo independiente \cite{hastie2009}.
